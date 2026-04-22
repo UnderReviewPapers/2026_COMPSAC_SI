@@ -1,6 +1,5 @@
 # An Interactive Tool for Data Service Identification in Cyber-Physical Production Networks
 
-🎥 Video showcasing the prototype available at [this link](https://drive.google.com/file/d/1R0FD7hHdYefOWkMR6An5ptcw7Tm6Jzzz/view)
 ---
 
 Web application based on **Django**:
