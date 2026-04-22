@@ -1,4 +1,4 @@
-# D3SD: A Web-based Tool for Data Service Design in Cyber-Physical Production Networks
+# An Interactive Tool for Data Service Identification in Cyber-Physical Production Networks
 
 🎥 Video showcasing the prototype available at [this link](https://drive.google.com/file/d/1R0FD7hHdYefOWkMR6An5ptcw7Tm6Jzzz/view)
 ---
@@ -59,7 +59,7 @@ docker info
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://gitlab.com/dbwis/d3sd-tool.git
+git clone https://github.com/UnderReviewPapers/2026_COMPSAC_SI.git
 cd webapp-files/ds-designer
 ```
 
