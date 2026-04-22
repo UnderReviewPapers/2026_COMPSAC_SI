@@ -1,0 +1,1068 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:custom="http://example.com/custom" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="Collaboration_0op0x5q">
+    <bpmn:participant id="Participant_1oia6re" name="Customer" processRef="Process_1" />
+    <bpmn:participant id="Participant_0ymz16x" name="Mechanical Part&#10;Supplier" processRef="Process_1f2hd0r" />
+    <bpmn:participant id="Participant_1u3hg7r" name="Production Leader" processRef="Process_1dcwofk" />
+    <bpmn:participant id="Participant_147dfqd" name="Forging Process&#10;Supplier" processRef="Process_17tz29y" />
+    <bpmn:messageFlow id="Flow_1jxruzm" sourceRef="Activity_1u1y293" targetRef="Activity_113maz6" />
+    <bpmn:messageFlow id="Flow_16kc0bh" sourceRef="Activity_1yzipk7" targetRef="Activity_1nq6don" />
+    <bpmn:messageFlow id="Flow_0vufuzn" sourceRef="Activity_0ou1eu9" targetRef="Activity_0ltnsxl" />
+    <bpmn:messageFlow id="Flow_0rvmg4c" sourceRef="Activity_17g600b" targetRef="Activity_0l0cjmi" />
+    <bpmn:messageFlow id="Flow_1txq2vh" sourceRef="Activity_0u9lyjl" targetRef="Activity_0t4kj2f" />
+    <bpmn:messageFlow id="Flow_0mn7bux" sourceRef="Activity_0acblfa" targetRef="Activity_19pzkmj" />
+    <bpmn:messageFlow id="Flow_04pgolo" sourceRef="Activity_0ae47q3" targetRef="Activity_0kdad6a" />
+    <bpmn:messageFlow id="Flow_141xq9g" sourceRef="Activity_0kn3fsh" targetRef="Activity_1fmhgen" />
+    <bpmn:group id="Group_0m926rh">
+      <bpmn:extensionElements>
+        <custom:groupExtension>
+          <custom:groupType>CPPS</custom:groupType>
+          <custom:name>production planning CPPS</custom:name>
+          <custom:description>production planning cpps</custom:description>
+          <custom:workflowType>sequence</custom:workflowType>
+          <custom:members>Activity_07o8s0a,Activity_16oz7n2</custom:members>
+          <custom:actor>Production Leader</custom:actor>
+          <custom:gdprMap>{}</custom:gdprMap>
+        </custom:groupExtension>
+      </bpmn:extensionElements>
+    </bpmn:group>
+    <bpmn:group id="Group_02r2is6">
+      <bpmn:extensionElements>
+        <custom:groupExtension>
+          <custom:groupType>CPPN</custom:groupType>
+          <custom:name>production scheduling</custom:name>
+          <custom:description>production scheduling</custom:description>
+          <custom:workflowType>sequence</custom:workflowType>
+          <custom:members>Activity_1u1y293,Activity_1nq6don,Activity_1q95ukd,Activity_113maz6,Activity_07o8s0a,Activity_16oz7n2,Activity_121fpwz,Activity_0ou1eu9,Activity_09umvi5,Activity_1yzipk7,Activity_0ltnsxl,Activity_12d2syz,Gateway_02wkxcq,Gateway_0ibxt88,Group_0m926rh</custom:members>
+          <custom:actors>Production Leader,Customer,Mechanical PartSupplier,Forging ProcessSupplier</custom:actors>
+          <custom:gdprMap>{"Customer":"Data Controller","Mechanical PartSupplier":"Data Processor","Production Leader":"Data Subject","Forging ProcessSupplier":"Supervisory Authority"}</custom:gdprMap>
+          <custom:businessGoal>Ensure production scheduling across the supply network.</custom:businessGoal>
+        </custom:groupExtension>
+      </bpmn:extensionElements>
+    </bpmn:group>
+    <bpmn:group id="Group_03pfo4x">
+      <bpmn:extensionElements>
+        <custom:groupExtension>
+          <custom:groupType>CPPN</custom:groupType>
+          <custom:name>production monitoring</custom:name>
+          <custom:description>production
+monitoring</custom:description>
+          <custom:workflowType>sequence</custom:workflowType>
+          <custom:members>Activity_1fmhgen,Activity_0l0cjmi,Activity_0u9lyjl,Activity_17g600b,Activity_0acblfa,Activity_0t4kj2f,Activity_0kdad6a,Activity_1oeuur3,Activity_1idq175,Activity_1p3burn,Activity_0t9nnj9,Activity_07u2eot,Activity_0kn3fsh,Activity_19pzkmj,Activity_0ae47q3,Gateway_1m3ki54,Gateway_18oj84c,Gateway_0npnmji,Gateway_02110uv,Gateway_0ec3hv5,Gateway_0yh6vnf,Group_1hve9wj</custom:members>
+          <custom:actors>Production Leader,Customer,Mechanical PartSupplier,Forging ProcessSupplier</custom:actors>
+          <custom:gdprMap>{"Customer":"Data Processor","Mechanical PartSupplier":"Data Controller","Production Leader":"Data Subject","Forging ProcessSupplier":"Supervisory Authority"}</custom:gdprMap>
+          <custom:businessGoal>Ensure real-time monitoring of production across the supply network.</custom:businessGoal>
+        </custom:groupExtension>
+      </bpmn:extensionElements>
+    </bpmn:group>
+    <bpmn:group id="Group_1hve9wj">
+      <bpmn:extensionElements>
+        <custom:groupExtension>
+          <custom:groupType>CPPS</custom:groupType>
+          <custom:name>quality check cpps</custom:name>
+          <custom:description>quality check</custom:description>
+          <custom:workflowType>sequence</custom:workflowType>
+          <custom:members>Activity_1idq175,Activity_1p3burn,Activity_0t9nnj9,Activity_07u2eot,Gateway_0ec3hv5,Gateway_0yh6vnf</custom:members>
+          <custom:actor>Production Leader</custom:actor>
+          <custom:gdprMap>{}</custom:gdprMap>
+        </custom:groupExtension>
+      </bpmn:extensionElements>
+    </bpmn:group>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:startEvent id="Event_0lbfa15">
+      <bpmn:outgoing>Flow_18ddbqe</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_1u1y293" name="Send Data for Sales Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>dispatch</custom:atomicType>
+          <custom:inputParams>100</custom:inputParams>
+          <custom:outputParams>100</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/send_data_order</custom:url>
+          <custom:owner>Customer</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18ddbqe</bpmn:incoming>
+      <bpmn:outgoing>Flow_1o6tj2x</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_18ddbqe" sourceRef="Event_0lbfa15" targetRef="Activity_1u1y293" />
+    <bpmn:endEvent id="Event_1bcq61w">
+      <bpmn:incoming>Flow_1o6tj2x</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1o6tj2x" sourceRef="Activity_1u1y293" targetRef="Event_1bcq61w" />
+    <bpmn:task id="Activity_1fmhgen" name="Receive Notification of Prod. Ready">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/receive_po_ready</custom:url>
+          <custom:owner>Mechanical PartSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0kj8rc4</bpmn:incoming>
+      <bpmn:outgoing>Flow_04i012o</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_0hxfjit">
+      <bpmn:incoming>Flow_04i012o</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="Event_0997hr3">
+      <bpmn:outgoing>Flow_0kj8rc4</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0kj8rc4" sourceRef="Event_0997hr3" targetRef="Activity_1fmhgen" />
+    <bpmn:sequenceFlow id="Flow_04i012o" sourceRef="Activity_1fmhgen" targetRef="Event_0hxfjit" />
+  </bpmn:process>
+  <bpmn:process id="Process_1f2hd0r">
+    <bpmn:task id="Activity_1nq6don" name="Receive Work Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>work order</custom:inputParams>
+          <custom:outputParams>work order data</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/receive_wo</custom:url>
+          <custom:owner>Mechanical PartSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1nc0maf</bpmn:incoming>
+      <bpmn:outgoing>Flow_18itr5l</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1q95ukd" name="Store Work Order Data">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>work order data</custom:inputParams>
+          <custom:outputParams>data</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/store_wo_Data</custom:url>
+          <custom:owner>Mechanical PartSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18itr5l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ce0att</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_0bms6e1">
+      <bpmn:incoming>Flow_1ce0att</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="Event_1gebtfo">
+      <bpmn:outgoing>Flow_1nc0maf</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1nc0maf" sourceRef="Event_1gebtfo" targetRef="Activity_1nq6don" />
+    <bpmn:sequenceFlow id="Flow_18itr5l" sourceRef="Activity_1nq6don" targetRef="Activity_1q95ukd" />
+    <bpmn:sequenceFlow id="Flow_1ce0att" sourceRef="Activity_1q95ukd" targetRef="Event_0bms6e1" />
+    <bpmn:startEvent id="Event_1m7k1jg">
+      <bpmn:outgoing>Flow_1j7jv90</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_0l0cjmi" name="Receive WO Status Inquiry Request">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>wo status request</custom:inputParams>
+          <custom:outputParams>wo status</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/receive_wo_status</custom:url>
+          <custom:owner>Mechanical PartSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1j7jv90</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rwzhte</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1j7jv90" sourceRef="Event_1m7k1jg" targetRef="Activity_0l0cjmi" />
+    <bpmn:task id="Activity_0u9lyjl" name="Send Work Order Status">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>dispatch</custom:atomicType>
+          <custom:inputParams>wo status</custom:inputParams>
+          <custom:outputParams>wo status sended</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/send_wo_status</custom:url>
+          <custom:owner>Mechanical PartSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rwzhte</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bt4es3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1rwzhte" sourceRef="Activity_0l0cjmi" targetRef="Activity_0u9lyjl" />
+    <bpmn:endEvent id="Event_0wdwsuw">
+      <bpmn:incoming>Flow_0bt4es3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0bt4es3" sourceRef="Activity_0u9lyjl" targetRef="Event_0wdwsuw" />
+  </bpmn:process>
+  <bpmn:process id="Process_1dcwofk">
+    <bpmn:task id="Activity_113maz6" name="Receive Sales Order Data">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>100</custom:inputParams>
+          <custom:outputParams>productionPlan</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/receive_order</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cbkm86</bpmn:incoming>
+      <bpmn:outgoing>Flow_0737sl5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:startEvent id="Event_0gegdvj">
+      <bpmn:outgoing>Flow_0cbkm86</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0cbkm86" sourceRef="Event_0gegdvj" targetRef="Activity_113maz6" />
+    <bpmn:task id="Activity_07o8s0a" name="Create Sales Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>quantity</custom:inputParams>
+          <custom:outputParams>productionInfo</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/create_sales_order</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0737sl5</bpmn:incoming>
+      <bpmn:outgoing>Flow_132mb61</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0737sl5" sourceRef="Activity_113maz6" targetRef="Activity_07o8s0a" />
+    <bpmn:task id="Activity_16oz7n2" name="Retrieve Prod. Order Info">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>sales order</custom:inputParams>
+          <custom:outputParams>production planning</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/create_pp</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_132mb61</bpmn:incoming>
+      <bpmn:outgoing>Flow_0itd5ke</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_132mb61" sourceRef="Activity_07o8s0a" targetRef="Activity_16oz7n2" />
+    <bpmn:sequenceFlow id="Flow_0itd5ke" sourceRef="Activity_16oz7n2" targetRef="Gateway_02wkxcq" />
+    <bpmn:parallelGateway id="Gateway_02wkxcq">
+      <bpmn:incoming>Flow_0itd5ke</bpmn:incoming>
+      <bpmn:outgoing>Flow_02mt1t6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1v45xf7</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_02mt1t6" sourceRef="Gateway_02wkxcq" targetRef="Activity_121fpwz" />
+    <bpmn:sequenceFlow id="Flow_1v45xf7" sourceRef="Gateway_02wkxcq" targetRef="Activity_09umvi5" />
+    <bpmn:sequenceFlow id="Flow_1bojpk4" sourceRef="Activity_121fpwz" targetRef="Activity_0ou1eu9" />
+    <bpmn:sequenceFlow id="Flow_1jihdpj" sourceRef="Activity_09umvi5" targetRef="Activity_1yzipk7" />
+    <bpmn:parallelGateway id="Gateway_0ibxt88">
+      <bpmn:incoming>Flow_14y4u74</bpmn:incoming>
+      <bpmn:incoming>Flow_1lc1wc2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0udijr3</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_14y4u74" sourceRef="Activity_0ou1eu9" targetRef="Gateway_0ibxt88" />
+    <bpmn:sequenceFlow id="Flow_1lc1wc2" sourceRef="Activity_1yzipk7" targetRef="Gateway_0ibxt88" />
+    <bpmn:task id="Activity_121fpwz" name="Prepare data for Purchase Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>production planning</custom:inputParams>
+          <custom:outputParams>work order</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/prepare_po</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02mt1t6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bojpk4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0ou1eu9" name="Send Purchase Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>display</custom:atomicType>
+          <custom:inputParams>purchase order</custom:inputParams>
+          <custom:outputParams>data po</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/send_po_data</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bojpk4</bpmn:incoming>
+      <bpmn:outgoing>Flow_14y4u74</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_09umvi5" name="Prepare data for Work Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>production planning</custom:inputParams>
+          <custom:outputParams>work order</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/send_wo</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1v45xf7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jihdpj</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1yzipk7" name="Send Work Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>dispatch</custom:atomicType>
+          <custom:inputParams>work order</custom:inputParams>
+          <custom:outputParams>order</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/send_work_oder</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1jihdpj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lc1wc2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_078yinn">
+      <bpmn:incoming>Flow_0udijr3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0udijr3" sourceRef="Gateway_0ibxt88" targetRef="Event_078yinn" />
+    <bpmn:startEvent id="Event_02w6yk0">
+      <bpmn:outgoing>Flow_1778amg</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1778amg" sourceRef="Event_02w6yk0" targetRef="Gateway_1m3ki54" />
+    <bpmn:parallelGateway id="Gateway_1m3ki54">
+      <bpmn:incoming>Flow_1778amg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1em5t76</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18d2sst</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1em5t76" sourceRef="Gateway_1m3ki54" targetRef="Activity_17g600b" />
+    <bpmn:task id="Activity_17g600b" name="Send WO Status Inquiry Req.">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>dispatch</custom:atomicType>
+          <custom:inputParams>wo status inquiry req</custom:inputParams>
+          <custom:outputParams>status</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/send_Wo_status</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1em5t76</bpmn:incoming>
+      <bpmn:incoming>Flow_1u79z9g</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xcl3tz</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0acblfa" name="Send PO Status Inquiry Req.">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>dispatch</custom:atomicType>
+          <custom:inputParams>po status request</custom:inputParams>
+          <custom:outputParams>po status</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/send_po_status</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18d2sst</bpmn:incoming>
+      <bpmn:incoming>Flow_0gg7m4k</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y87er5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_18d2sst" sourceRef="Gateway_1m3ki54" targetRef="Activity_0acblfa" />
+    <bpmn:task id="Activity_0t4kj2f" name="Receive Work Order Status">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>wo status</custom:inputParams>
+          <custom:outputParams>wo status</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/wo_status_receive</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xcl3tz</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xj3w0f</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0xcl3tz" sourceRef="Activity_17g600b" targetRef="Activity_0t4kj2f" />
+    <bpmn:task id="Activity_0kdad6a" name="Receive Purchase Order Status">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>po status</custom:inputParams>
+          <custom:outputParams>po status</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/receive_po_status</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0y87er5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0v0w2wa</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0y87er5" sourceRef="Activity_0acblfa" targetRef="Activity_0kdad6a" />
+    <bpmn:exclusiveGateway id="Gateway_18oj84c">
+      <bpmn:incoming>Flow_0v0w2wa</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g1q3j3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0gg7m4k</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0v0w2wa" name="PO finished?" sourceRef="Activity_0kdad6a" targetRef="Gateway_18oj84c" />
+    <bpmn:exclusiveGateway id="Gateway_0npnmji">
+      <bpmn:incoming>Flow_0xj3w0f</bpmn:incoming>
+      <bpmn:outgoing>Flow_0sqankg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1u79z9g</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0xj3w0f" name="WO finished?" sourceRef="Activity_0t4kj2f" targetRef="Gateway_0npnmji" />
+    <bpmn:sequenceFlow id="Flow_0sqankg" name="YES" sourceRef="Gateway_0npnmji" targetRef="Gateway_02110uv" />
+    <bpmn:parallelGateway id="Gateway_02110uv">
+      <bpmn:incoming>Flow_0sqankg</bpmn:incoming>
+      <bpmn:incoming>Flow_0g1q3j3</bpmn:incoming>
+      <bpmn:outgoing>Flow_18fqwhg</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_0g1q3j3" name="YES" sourceRef="Gateway_18oj84c" targetRef="Gateway_02110uv" />
+    <bpmn:sequenceFlow id="Flow_1u79z9g" name="NO" sourceRef="Gateway_0npnmji" targetRef="Activity_17g600b" />
+    <bpmn:sequenceFlow id="Flow_0gg7m4k" name="NO" sourceRef="Gateway_18oj84c" targetRef="Activity_0acblfa" />
+    <bpmn:task id="Activity_1oeuur3" name="Create Assembly Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/create_assembly_order</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18fqwhg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mnqxwf</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_18fqwhg" sourceRef="Gateway_02110uv" targetRef="Activity_1oeuur3" />
+    <bpmn:sequenceFlow id="Flow_0mnqxwf" sourceRef="Activity_1oeuur3" targetRef="Gateway_0ec3hv5" />
+    <bpmn:parallelGateway id="Gateway_0ec3hv5">
+      <bpmn:incoming>Flow_0mnqxwf</bpmn:incoming>
+      <bpmn:outgoing>Flow_173u4j8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_12vyz6y</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_173u4j8" sourceRef="Gateway_0ec3hv5" targetRef="Activity_1p3burn" />
+    <bpmn:task id="Activity_1idq175" name="Read data about delays in phases">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/read_data_delays</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_12vyz6y</bpmn:incoming>
+      <bpmn:outgoing>Flow_18mrups</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_12vyz6y" sourceRef="Gateway_0ec3hv5" targetRef="Activity_1idq175" />
+    <bpmn:task id="Activity_1p3burn" name="Read anomalies from machines">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/read_machines_anomalies</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_173u4j8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0afk3rj</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0afk3rj" sourceRef="Activity_1p3burn" targetRef="Gateway_0yh6vnf" />
+    <bpmn:sequenceFlow id="Flow_18mrups" sourceRef="Activity_1idq175" targetRef="Gateway_0yh6vnf" />
+    <bpmn:parallelGateway id="Gateway_0yh6vnf">
+      <bpmn:incoming>Flow_0afk3rj</bpmn:incoming>
+      <bpmn:incoming>Flow_18mrups</bpmn:incoming>
+      <bpmn:outgoing>Flow_14hu4qb</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:task id="Activity_0t9nnj9" name="Assess Product Quality">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/product_quality</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_14hu4qb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1r0oyvv</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_14hu4qb" sourceRef="Gateway_0yh6vnf" targetRef="Activity_0t9nnj9" />
+    <bpmn:task id="Activity_07u2eot" name="Display Product Quality KPIs">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>display</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/display_product_kpi</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1r0oyvv</bpmn:incoming>
+      <bpmn:outgoing>Flow_10hjc10</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1r0oyvv" sourceRef="Activity_0t9nnj9" targetRef="Activity_07u2eot" />
+    <bpmn:task id="Activity_0kn3fsh" name="Send Notif. of Product Ready">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/production_Ready</custom:url>
+          <custom:owner>Production Leader</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10hjc10</bpmn:incoming>
+      <bpmn:outgoing>Flow_0b0lmc7</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_10hjc10" sourceRef="Activity_07u2eot" targetRef="Activity_0kn3fsh" />
+    <bpmn:endEvent id="Event_0bwa968">
+      <bpmn:incoming>Flow_0b0lmc7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0b0lmc7" sourceRef="Activity_0kn3fsh" targetRef="Event_0bwa968" />
+  </bpmn:process>
+  <bpmn:process id="Process_17tz29y">
+    <bpmn:task id="Activity_0ltnsxl" name="Receive Purchase Order">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>purchase order</custom:inputParams>
+          <custom:outputParams>puchase order data</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/receive_purchase_order</custom:url>
+          <custom:owner>Forging ProcessSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hd1feu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hz1vpb</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_12d2syz" name="Store Purchase Order Data">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>process&amp;monitor</custom:atomicType>
+          <custom:inputParams>purchase order data</custom:inputParams>
+          <custom:outputParams>data po to store</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/store_po_Data</custom:url>
+          <custom:owner>Forging ProcessSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hz1vpb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rm2y7z</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0hz1vpb" sourceRef="Activity_0ltnsxl" targetRef="Activity_12d2syz" />
+    <bpmn:endEvent id="Event_1pm659n">
+      <bpmn:incoming>Flow_0rm2y7z</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0rm2y7z" sourceRef="Activity_12d2syz" targetRef="Event_1pm659n" />
+    <bpmn:startEvent id="Event_0zyliqs">
+      <bpmn:outgoing>Flow_1hd1feu</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1hd1feu" sourceRef="Event_0zyliqs" targetRef="Activity_0ltnsxl" />
+    <bpmn:task id="Activity_19pzkmj" name="Receive PO Status Inquiry Request">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>collect</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>GET</custom:method>
+          <custom:url>/get_po_status_inquiry_request</custom:url>
+          <custom:owner>Forging ProcessSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s7tt4r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mizz18</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0ae47q3" name="Send Purchase Order Status">
+      <bpmn:extensionElements>
+        <custom:atomicExtension>
+          <custom:atomicType>dispatch</custom:atomicType>
+          <custom:inputParams>a</custom:inputParams>
+          <custom:outputParams>b</custom:outputParams>
+          <custom:method>POST</custom:method>
+          <custom:url>/send_po_status</custom:url>
+          <custom:owner>Forging ProcessSupplier</custom:owner>
+        </custom:atomicExtension>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0mizz18</bpmn:incoming>
+      <bpmn:outgoing>Flow_1naiw18</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0mizz18" sourceRef="Activity_19pzkmj" targetRef="Activity_0ae47q3" />
+    <bpmn:endEvent id="Event_0xuvud5">
+      <bpmn:incoming>Flow_1naiw18</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1naiw18" sourceRef="Activity_0ae47q3" targetRef="Event_0xuvud5" />
+    <bpmn:startEvent id="Event_1tqtovd">
+      <bpmn:outgoing>Flow_0s7tt4r</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0s7tt4r" sourceRef="Event_1tqtovd" targetRef="Activity_19pzkmj" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0op0x5q">
+      <bpmndi:BPMNShape id="Participant_1oia6re_di" bpmnElement="Participant_1oia6re" isHorizontal="true">
+        <dc:Bounds x="150" y="20" width="3210" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0lbfa15_di" bpmnElement="Event_0lbfa15">
+        <dc:Bounds x="192" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1u1y293_di" bpmnElement="Activity_1u1y293">
+        <dc:Bounds x="280" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bcq61w_di" bpmnElement="Event_1bcq61w">
+        <dc:Bounds x="432" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1fmhgen_di" bpmnElement="Activity_1fmhgen">
+        <dc:Bounds x="3050" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hxfjit_di" bpmnElement="Event_0hxfjit">
+        <dc:Bounds x="3202" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0997hr3_di" bpmnElement="Event_0997hr3">
+        <dc:Bounds x="2952" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_18ddbqe_di" bpmnElement="Flow_18ddbqe">
+        <di:waypoint x="228" y="140" />
+        <di:waypoint x="280" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o6tj2x_di" bpmnElement="Flow_1o6tj2x">
+        <di:waypoint x="380" y="140" />
+        <di:waypoint x="432" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kj8rc4_di" bpmnElement="Flow_0kj8rc4">
+        <di:waypoint x="2988" y="200" />
+        <di:waypoint x="3050" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04i012o_di" bpmnElement="Flow_04i012o">
+        <di:waypoint x="3150" y="200" />
+        <di:waypoint x="3202" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_0ymz16x_di" bpmnElement="Participant_0ymz16x" isHorizontal="true">
+        <dc:Bounds x="150" y="320" width="3198" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nq6don_di" bpmnElement="Activity_1nq6don">
+        <dc:Bounds x="1010" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q95ukd_di" bpmnElement="Activity_1q95ukd">
+        <dc:Bounds x="1160" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0bms6e1_di" bpmnElement="Event_0bms6e1">
+        <dc:Bounds x="1312" y="472" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gebtfo_di" bpmnElement="Event_1gebtfo">
+        <dc:Bounds x="922" y="472" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1m7k1jg_di" bpmnElement="Event_1m7k1jg">
+        <dc:Bounds x="1572" y="472" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0l0cjmi_di" bpmnElement="Activity_0l0cjmi">
+        <dc:Bounds x="1660" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u9lyjl_di" bpmnElement="Activity_0u9lyjl">
+        <dc:Bounds x="1820" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wdwsuw_di" bpmnElement="Event_0wdwsuw">
+        <dc:Bounds x="1982" y="472" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1nc0maf_di" bpmnElement="Flow_1nc0maf">
+        <di:waypoint x="958" y="490" />
+        <di:waypoint x="1010" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18itr5l_di" bpmnElement="Flow_18itr5l">
+        <di:waypoint x="1110" y="490" />
+        <di:waypoint x="1160" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ce0att_di" bpmnElement="Flow_1ce0att">
+        <di:waypoint x="1260" y="490" />
+        <di:waypoint x="1312" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j7jv90_di" bpmnElement="Flow_1j7jv90">
+        <di:waypoint x="1608" y="490" />
+        <di:waypoint x="1660" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rwzhte_di" bpmnElement="Flow_1rwzhte">
+        <di:waypoint x="1760" y="490" />
+        <di:waypoint x="1820" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bt4es3_di" bpmnElement="Flow_0bt4es3">
+        <di:waypoint x="1920" y="490" />
+        <di:waypoint x="1982" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_1u3hg7r_di" bpmnElement="Participant_1u3hg7r" isHorizontal="true">
+        <dc:Bounds x="150" y="582" width="3198" height="388" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_113maz6_di" bpmnElement="Activity_113maz6">
+        <dc:Bounds x="270" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0gegdvj_di" bpmnElement="Event_0gegdvj">
+        <dc:Bounds x="202" y="642" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07o8s0a_di" bpmnElement="Activity_07o8s0a">
+        <dc:Bounds x="410" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16oz7n2_di" bpmnElement="Activity_16oz7n2">
+        <dc:Bounds x="550" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_17pe31d_di" bpmnElement="Gateway_02wkxcq">
+        <dc:Bounds x="735" y="685" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ndfxjz_di" bpmnElement="Gateway_0ibxt88">
+        <dc:Bounds x="1165" y="685" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_121fpwz_di" bpmnElement="Activity_121fpwz">
+        <dc:Bounds x="850" y="740" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ou1eu9_di" bpmnElement="Activity_0ou1eu9">
+        <dc:Bounds x="1020" y="740" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09umvi5_di" bpmnElement="Activity_09umvi5">
+        <dc:Bounds x="850" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yzipk7_di" bpmnElement="Activity_1yzipk7">
+        <dc:Bounds x="1010" y="620" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_078yinn_di" bpmnElement="Event_078yinn">
+        <dc:Bounds x="1262" y="692" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_02w6yk0_di" bpmnElement="Event_02w6yk0">
+        <dc:Bounds x="1452" y="762" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1vft9ug_di" bpmnElement="Gateway_1m3ki54">
+        <dc:Bounds x="1545" y="755" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17g600b_di" bpmnElement="Activity_17g600b">
+        <dc:Bounds x="1660" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0acblfa_di" bpmnElement="Activity_0acblfa">
+        <dc:Bounds x="1660" y="850" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t4kj2f_di" bpmnElement="Activity_0t4kj2f">
+        <dc:Bounds x="1830" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kdad6a_di" bpmnElement="Activity_0kdad6a">
+        <dc:Bounds x="1830" y="850" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_18oj84c_di" bpmnElement="Gateway_18oj84c" isMarkerVisible="true">
+        <dc:Bounds x="2005" y="865" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0npnmji_di" bpmnElement="Gateway_0npnmji" isMarkerVisible="true">
+        <dc:Bounds x="2005" y="675" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0z60w4y_di" bpmnElement="Gateway_02110uv">
+        <dc:Bounds x="2105" y="755" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oeuur3_di" bpmnElement="Activity_1oeuur3">
+        <dc:Bounds x="2210" y="740" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0o6h6lq_di" bpmnElement="Gateway_0ec3hv5">
+        <dc:Bounds x="2365" y="755" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1idq175_di" bpmnElement="Activity_1idq175">
+        <dc:Bounds x="2470" y="850" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p3burn_di" bpmnElement="Activity_1p3burn">
+        <dc:Bounds x="2470" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0d18a1m_di" bpmnElement="Gateway_0yh6vnf">
+        <dc:Bounds x="2625" y="755" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0t9nnj9_di" bpmnElement="Activity_0t9nnj9">
+        <dc:Bounds x="2730" y="740" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07u2eot_di" bpmnElement="Activity_07u2eot">
+        <dc:Bounds x="2890" y="740" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kn3fsh_di" bpmnElement="Activity_0kn3fsh">
+        <dc:Bounds x="3050" y="740" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0bwa968_di" bpmnElement="Event_0bwa968">
+        <dc:Bounds x="3212" y="762" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0cbkm86_di" bpmnElement="Flow_0cbkm86">
+        <di:waypoint x="238" y="660" />
+        <di:waypoint x="270" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0737sl5_di" bpmnElement="Flow_0737sl5">
+        <di:waypoint x="370" y="660" />
+        <di:waypoint x="410" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_132mb61_di" bpmnElement="Flow_132mb61">
+        <di:waypoint x="510" y="660" />
+        <di:waypoint x="550" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0itd5ke_di" bpmnElement="Flow_0itd5ke">
+        <di:waypoint x="650" y="660" />
+        <di:waypoint x="693" y="660" />
+        <di:waypoint x="693" y="710" />
+        <di:waypoint x="735" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02mt1t6_di" bpmnElement="Flow_02mt1t6">
+        <di:waypoint x="760" y="735" />
+        <di:waypoint x="760" y="780" />
+        <di:waypoint x="850" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v45xf7_di" bpmnElement="Flow_1v45xf7">
+        <di:waypoint x="760" y="685" />
+        <di:waypoint x="760" y="660" />
+        <di:waypoint x="850" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bojpk4_di" bpmnElement="Flow_1bojpk4">
+        <di:waypoint x="950" y="780" />
+        <di:waypoint x="1020" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jihdpj_di" bpmnElement="Flow_1jihdpj">
+        <di:waypoint x="950" y="660" />
+        <di:waypoint x="1010" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14y4u74_di" bpmnElement="Flow_14y4u74">
+        <di:waypoint x="1120" y="780" />
+        <di:waypoint x="1190" y="780" />
+        <di:waypoint x="1190" y="735" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lc1wc2_di" bpmnElement="Flow_1lc1wc2">
+        <di:waypoint x="1110" y="660" />
+        <di:waypoint x="1190" y="660" />
+        <di:waypoint x="1190" y="685" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0udijr3_di" bpmnElement="Flow_0udijr3">
+        <di:waypoint x="1215" y="710" />
+        <di:waypoint x="1262" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1778amg_di" bpmnElement="Flow_1778amg">
+        <di:waypoint x="1488" y="780" />
+        <di:waypoint x="1545" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1em5t76_di" bpmnElement="Flow_1em5t76">
+        <di:waypoint x="1570" y="755" />
+        <di:waypoint x="1570" y="700" />
+        <di:waypoint x="1660" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18d2sst_di" bpmnElement="Flow_18d2sst">
+        <di:waypoint x="1570" y="805" />
+        <di:waypoint x="1570" y="890" />
+        <di:waypoint x="1660" y="890" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xcl3tz_di" bpmnElement="Flow_0xcl3tz">
+        <di:waypoint x="1760" y="700" />
+        <di:waypoint x="1830" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y87er5_di" bpmnElement="Flow_0y87er5">
+        <di:waypoint x="1760" y="890" />
+        <di:waypoint x="1830" y="890" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v0w2wa_di" bpmnElement="Flow_0v0w2wa">
+        <di:waypoint x="1930" y="890" />
+        <di:waypoint x="2005" y="890" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1936" y="872" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xj3w0f_di" bpmnElement="Flow_0xj3w0f">
+        <di:waypoint x="1930" y="700" />
+        <di:waypoint x="2005" y="700" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1935" y="682" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sqankg_di" bpmnElement="Flow_0sqankg">
+        <di:waypoint x="2055" y="700" />
+        <di:waypoint x="2130" y="700" />
+        <di:waypoint x="2130" y="755" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2082" y="682" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g1q3j3_di" bpmnElement="Flow_0g1q3j3">
+        <di:waypoint x="2055" y="890" />
+        <di:waypoint x="2130" y="890" />
+        <di:waypoint x="2130" y="805" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2082" y="872" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u79z9g_di" bpmnElement="Flow_1u79z9g">
+        <di:waypoint x="2030" y="675" />
+        <di:waypoint x="2030" y="620" />
+        <di:waypoint x="1680" y="620" />
+        <di:waypoint x="1680" y="660" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2031" y="653" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gg7m4k_di" bpmnElement="Flow_0gg7m4k">
+        <di:waypoint x="2030" y="915" />
+        <di:waypoint x="2030" y="960" />
+        <di:waypoint x="1670" y="960" />
+        <di:waypoint x="1670" y="930" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2031" y="933" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18fqwhg_di" bpmnElement="Flow_18fqwhg">
+        <di:waypoint x="2155" y="780" />
+        <di:waypoint x="2210" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mnqxwf_di" bpmnElement="Flow_0mnqxwf">
+        <di:waypoint x="2310" y="780" />
+        <di:waypoint x="2365" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_173u4j8_di" bpmnElement="Flow_173u4j8">
+        <di:waypoint x="2390" y="755" />
+        <di:waypoint x="2390" y="700" />
+        <di:waypoint x="2470" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12vyz6y_di" bpmnElement="Flow_12vyz6y">
+        <di:waypoint x="2390" y="805" />
+        <di:waypoint x="2390" y="890" />
+        <di:waypoint x="2470" y="890" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0afk3rj_di" bpmnElement="Flow_0afk3rj">
+        <di:waypoint x="2570" y="700" />
+        <di:waypoint x="2650" y="700" />
+        <di:waypoint x="2650" y="755" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18mrups_di" bpmnElement="Flow_18mrups">
+        <di:waypoint x="2570" y="890" />
+        <di:waypoint x="2650" y="890" />
+        <di:waypoint x="2650" y="805" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14hu4qb_di" bpmnElement="Flow_14hu4qb">
+        <di:waypoint x="2675" y="780" />
+        <di:waypoint x="2730" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r0oyvv_di" bpmnElement="Flow_1r0oyvv">
+        <di:waypoint x="2830" y="780" />
+        <di:waypoint x="2890" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10hjc10_di" bpmnElement="Flow_10hjc10">
+        <di:waypoint x="2990" y="780" />
+        <di:waypoint x="3050" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b0lmc7_di" bpmnElement="Flow_0b0lmc7">
+        <di:waypoint x="3150" y="780" />
+        <di:waypoint x="3212" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_147dfqd_di" bpmnElement="Participant_147dfqd" isHorizontal="true">
+        <dc:Bounds x="150" y="1000" width="2200" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ltnsxl_di" bpmnElement="Activity_0ltnsxl">
+        <dc:Bounds x="1020" y="1020" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12d2syz_di" bpmnElement="Activity_12d2syz">
+        <dc:Bounds x="1170" y="1020" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1pm659n_di" bpmnElement="Event_1pm659n">
+        <dc:Bounds x="1322" y="1042" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0zyliqs_di" bpmnElement="Event_0zyliqs">
+        <dc:Bounds x="892" y="1042" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19pzkmj_di" bpmnElement="Activity_19pzkmj">
+        <dc:Bounds x="1660" y="1020" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ae47q3_di" bpmnElement="Activity_0ae47q3">
+        <dc:Bounds x="1810" y="1020" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xuvud5_di" bpmnElement="Event_0xuvud5">
+        <dc:Bounds x="1962" y="1042" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tqtovd_di" bpmnElement="Event_1tqtovd">
+        <dc:Bounds x="1542" y="1042" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0hz1vpb_di" bpmnElement="Flow_0hz1vpb">
+        <di:waypoint x="1120" y="1060" />
+        <di:waypoint x="1170" y="1060" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rm2y7z_di" bpmnElement="Flow_0rm2y7z">
+        <di:waypoint x="1270" y="1060" />
+        <di:waypoint x="1322" y="1060" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hd1feu_di" bpmnElement="Flow_1hd1feu">
+        <di:waypoint x="928" y="1060" />
+        <di:waypoint x="1020" y="1060" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mizz18_di" bpmnElement="Flow_0mizz18">
+        <di:waypoint x="1760" y="1060" />
+        <di:waypoint x="1810" y="1060" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1naiw18_di" bpmnElement="Flow_1naiw18">
+        <di:waypoint x="1910" y="1060" />
+        <di:waypoint x="1962" y="1060" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s7tt4r_di" bpmnElement="Flow_0s7tt4r">
+        <di:waypoint x="1578" y="1060" />
+        <di:waypoint x="1660" y="1060" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Group_0m926rh_di" bpmnElement="Group_0m926rh">
+        <dc:Bounds x="390" y="610" width="300" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Group_02r2is6_di" bpmnElement="Group_02r2is6">
+        <dc:Bounds x="190" y="50" width="1230" height="1090" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Group_03pfo4x_di" bpmnElement="Group_03pfo4x">
+        <dc:Bounds x="1430" y="50" width="1880" height="1110" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Group_1hve9wj_di" bpmnElement="Group_1hve9wj">
+        <dc:Bounds x="2330" y="620" width="670" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1jxruzm_di" bpmnElement="Flow_1jxruzm">
+        <di:waypoint x="330" y="180" />
+        <di:waypoint x="330" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16kc0bh_di" bpmnElement="Flow_16kc0bh">
+        <di:waypoint x="1060" y="620" />
+        <di:waypoint x="1060" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vufuzn_di" bpmnElement="Flow_0vufuzn">
+        <di:waypoint x="1070" y="820" />
+        <di:waypoint x="1070" y="1020" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rvmg4c_di" bpmnElement="Flow_0rvmg4c">
+        <di:waypoint x="1710" y="660" />
+        <di:waypoint x="1710" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1txq2vh_di" bpmnElement="Flow_1txq2vh">
+        <di:waypoint x="1870" y="530" />
+        <di:waypoint x="1870" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mn7bux_di" bpmnElement="Flow_0mn7bux">
+        <di:waypoint x="1710" y="930" />
+        <di:waypoint x="1710" y="1020" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04pgolo_di" bpmnElement="Flow_04pgolo">
+        <di:waypoint x="1860" y="1020" />
+        <di:waypoint x="1860" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_141xq9g_di" bpmnElement="Flow_141xq9g">
+        <di:waypoint x="3100" y="740" />
+        <di:waypoint x="3100" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

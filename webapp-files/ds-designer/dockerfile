@@ -1,0 +1,17 @@
+FROM python:3.13-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR .
+
+RUN apt-get update && apt-get install -y gcc
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+ENV APP_PORT=8000
+
+COPY . .
+
+CMD ["sh", "-c", "python manage.py runserver 0.0.0.0:${APP_PORT}"]

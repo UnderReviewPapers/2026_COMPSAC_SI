@@ -1,0 +1,246 @@
+{% load static %}
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Edit CPPN Policy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">Edit CPPN Policy</h4>
+    <a href="{% url 'rbac_cppn' %}?id={{ diagram_id }}" class="btn btn-outline-secondary btn-sm">Back</a>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Diagram name</label>
+          <input id="diagram_name" class="form-control" value="{{ diagram_name }}" readonly>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">CPPN name</label>
+          <input id="cppn_name" class="form-control" value="{{ cppn_name }}" readonly>
+
+          <!-- hidden IDs -->
+          <input type="hidden" id="diagram_id" value="{{ diagram_id }}">
+          <input type="hidden" id="cppn_id"    value="{{ cppn_id }}">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form class="card">
+    <div class="card-body">
+      <div id="alertHolder" class="mb-2"></div>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Services in CPPN</label>
+          <!-- legenda -->
+          <div class="mb-2 small text-muted">
+            <span class="badge bg-info-subtle border border-info text-info-emphasis">Atomic</span> &nbsp; | &nbsp;
+            <span class="badge bg-warning-subtle border border-warning text-warning-emphasis">CPPS</span>
+          </div>
+          <div id="servicesBox" class="form-control" style="height:auto; min-height:38px; overflow:auto;" readonly></div>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="d-flex align-items-center justify-content-between">
+        <h6 class="mb-0">Actors with <code>invoke</code></h6>
+        <button type="button" class="btn btn-success btn-sm" id="addPermBtn">+ Add actor</button>
+      </div>
+      <div id="permsList" class="mt-3"></div>
+
+      <div class="text-end mt-4">
+        <button type="button" class="btn btn-primary" id="saveBtn" disabled>Save</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  const API_GET_ONE = "{% url 'rbac_cppn_one' %}";
+  const API_UPDATE  = "{% url 'rbac_cppn_update_permissions' %}";
+  const API_ACTORS  = "{% url 'diagram_actors' %}";
+
+  function esc(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])) }
+  function alertHtml(kind,msg){ return `<div class="alert alert-${kind} alert-dismissible fade show" role="alert">${esc(msg)}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`; }
+  function getCookie(name){ const v = `; ${document.cookie}`.split(`; ${name}=`); if (v.length===2) return v.pop().split(';').shift(); }
+
+  async function fetchActors(diagramId){
+    const r = await fetch(`${API_ACTORS}?diagram_id=${encodeURIComponent(diagramId)}`);
+    if(!r.ok) throw new Error("Cannot load actors");
+    const data = await r.json();
+    return data.actors || [];
+  }
+
+  // badge colorato per atomic/cpps
+  function badge(label, titleAttr, serviceId){
+    const isCPPS   = (serviceId||"").startsWith("Group_");
+    const isAtomic = (serviceId||"").startsWith("Activity_");
+    const cls = isCPPS
+      ? "bg-warning-subtle border border-warning text-warning-emphasis"
+      : isAtomic
+        ? "bg-info-subtle border border-info text-info-emphasis"
+        : "bg-light border text-body-secondary";
+    const title = titleAttr ? ` title="${esc(titleAttr)}"` : "";
+    return `<span class="badge ${cls}"${title}>${esc(label)}</span>`;
+  }
+
+  function readActors(){
+    return [...document.querySelectorAll(".perm-row select.perm-actor")]
+      .map(sel => (sel.value||"").trim())
+      .filter((v,i,arr)=> v && arr.indexOf(v)===i);
+  }
+
+  function permissionRowHTML({rowId, actors, actor}) {
+    // escludo dal menu gli attori già scelti
+    const already = readActors().filter(a => a !== actor);
+    const available = actors.filter(a => !already.includes(a));
+
+    const options = available.map(a =>
+      `<option value="${esc(a)}" ${a===actor?'selected':''}>${esc(a)}</option>`
+    ).join("");
+
+    const selectActor = `
+      <select class="form-select form-select-sm perm-actor" required>
+        <option value="" ${actor?'':'selected'} disabled>— select actor —</option>
+        ${options}
+      </select>`;
+
+    const removeBtn = `<button type="button" class="btn btn-danger btn-sm" data-remove="${rowId}" title="Revoke">Remove</button>`;
+
+    return `
+      <div class="row g-2 align-items-end mb-2 perm-row" data-row="${rowId}">
+        <div class="col-md-11">
+          <label class="form-label form-label-sm">Actor</label>
+          ${selectActor}
+        </div>
+        <div class="col-md-1 text-end">${removeBtn}</div>
+      </div>`;
+  }
+
+  // remove row
+  document.addEventListener("click", (e)=>{
+    const btn = e.target.closest("button[data-remove]");
+    if(!btn) return;
+    const row = btn.closest(".perm-row");
+    if (row) row.remove();
+  });
+
+  // avoid duplicates
+  document.addEventListener("change", (e)=>{
+    if(!e.target.classList.contains("perm-actor")) return;
+    const chosen = e.target.value;
+    const current = readActors();
+    const dup = current.filter(a => a===chosen);
+    if (dup.length > 1){
+      e.target.value = "";
+      e.target.closest(".perm-row").classList.add("is-invalid");
+      setTimeout(()=> e.target.closest(".perm-row")?.classList.remove("is-invalid"), 1200);
+    }
+  });
+
+  let ACTORS = [];
+
+  async function load(){
+    let diagram_id = document.getElementById("diagram_id").value;
+    const cppn_id  = document.getElementById("cppn_id").value;
+    const alertHolder = document.getElementById("alertHolder");
+
+    const r = await fetch(`${API_GET_ONE}?diagram_id=${encodeURIComponent(diagram_id)}&cppn_id=${encodeURIComponent(cppn_id)}`);
+    if(!r.ok){
+      const txt = await r.text().catch(()=> "");
+      alertHolder.innerHTML = alertHtml('danger', `Errore caricamento (${r.status}): ${esc(txt)}`);
+      return;
+    }
+    const data = await r.json();
+
+    if (data.diagram_name) {
+      document.getElementById("diagram_name").value = data.diagram_name;
+    }
+    if (data.cppn_name || data.service_name) {
+      document.getElementById("cppn_name").value = data.cppn_name || data.service_name;
+      const h = document.querySelector("h4.mb-0");
+      if (h) h.textContent = `Edit CPPN Policy — ${data.cppn_name || data.service_name}`;
+    }
+
+    if (data.diagram_id) {
+      document.getElementById("diagram_id").value = data.diagram_id;
+      diagram_id = data.diagram_id;
+    }
+
+    // services (badge colorati)
+    let servicesHtml = '<span class="text-muted">—</span>';
+    const resolved = Array.isArray(data.services_resolved) ? data.services_resolved : [];
+    if (resolved.length){
+      servicesHtml = resolved.map(s => badge(s.service_name || s.service_id, s.service_id, s.service_id)).join(" ");
+    }
+    document.getElementById("servicesBox").innerHTML = servicesHtml;
+
+    // actors
+    ACTORS = await fetchActors(diagram_id);
+
+    const permsList = document.getElementById("permsList");
+    permsList.innerHTML = "";
+
+    const actorsInPolicy = Array.from(new Set((data.permissions||[]).map(p => p.actor).filter(Boolean)));
+
+    for(const a of actorsInPolicy){
+      permsList.insertAdjacentHTML("beforeend",
+        permissionRowHTML({rowId: crypto.randomUUID(), actors: ACTORS, actor: a})
+      );
+    }
+
+    document.getElementById("saveBtn").disabled = false;
+  }
+
+  // unico listener Add actor
+  document.getElementById("addPermBtn").addEventListener("click", ()=>{
+    const permsList = document.getElementById("permsList");
+    const current = readActors();
+    const available = ACTORS.filter(a => !current.includes(a));
+    if (!available.length) {
+      alert("All available actors are already included!");
+      return;
+    }
+    permsList.insertAdjacentHTML("beforeend",
+      permissionRowHTML({rowId: crypto.randomUUID(), actors: ACTORS, actor: ""})
+    );
+  });
+
+  // unico listener Save
+  document.getElementById("saveBtn").addEventListener("click", async (e)=>{
+    e.preventDefault();
+    const diagram_id = document.getElementById("diagram_id").value.trim();
+    const cppn_id    = document.getElementById("cppn_id").value.trim();
+    const actors     = readActors();
+
+    if (actors.length < 1) {
+      alert("At least one actor is mandatory!");
+      return;
+    }
+
+    const r = await fetch(API_UPDATE, {
+      method: "PUT",
+      headers: {"Content-Type":"application/json","X-CSRFToken": getCookie("csrftoken") || ""},
+      body: JSON.stringify({ diagram_id, cppn_id, permission_actors: actors })
+    });
+    const json = await r.json().catch(()=> ({}));
+    const holder = document.getElementById("alertHolder");
+    if(!r.ok){ holder.innerHTML = alertHtml('danger', json.detail || 'Saving error'); return; }
+    holder.innerHTML = alertHtml('success', 'Permissions updated.');
+  });
+
+  load();
+</script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</body>
+</html>

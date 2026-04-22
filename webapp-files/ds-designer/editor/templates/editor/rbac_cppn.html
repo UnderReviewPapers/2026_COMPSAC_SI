@@ -1,0 +1,113 @@
+{% load static %}
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>RBAC Policies · CPPN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">CPPN Policies</h4>
+    <a href="{% url 'rbac_policies' %}?id={{ request.GET.id }}" class="btn btn-outline-secondary btn-sm">Back</a>
+  </div>
+
+  <!-- legenda -->
+  <div class="mb-3 small text-muted">
+    <label class="form-label">Legend: </label>
+    <span class="badge bg-info-subtle border border-info text-info-emphasis">Atomic</span> &nbsp; | &nbsp;
+    <span class="badge bg-warning-subtle border border-warning text-warning-emphasis">CPPS</span>
+  </div>
+
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width:26%">CPPN Name</th>
+              <th style="width:20%">Actors</th>
+              <th>Permissions (actor, service → perm)</th>
+              <th style="width:10%"></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="4" class="text-center py-4">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API_CPPN_BY_DIAGRAM = "{% url 'rbac_cppn_by_diagram' %}";
+
+  function esc(s){return (s??'').toString().replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  function buildEditUrl(cppnId, diagramId){
+    const base = "{% url 'rbac_cppn_edit' 'CPPN_ID' %}".replace("CPPN_ID", encodeURIComponent(cppnId));
+    return `${base}?id=${encodeURIComponent(diagramId)}`;
+  }
+
+  // Badge colorato in base al tipo (prefisso dell'ID)
+  function servicePill(x){
+    const id = x.service || "";
+    const name = x.service_name || id;
+    const isCPPS   = id.startsWith("Group_");
+    const isAtomic = id.startsWith("Activity_");
+    const cls = isCPPS
+      ? "bg-warning-subtle border border-warning text-warning-emphasis"
+      : isAtomic
+        ? "bg-info-subtle border border-info text-info-emphasis"
+        : "bg-light border text-body-secondary";
+    return `<span class="badge ${cls}" title="${esc(id)}">${esc(name)}</span>`;
+  }
+
+  function rowHtml(p, diagramId){
+    const actors = (p.actors || []).join(", ");
+    const perms = (p.permissions||[])
+      .map(x => `${esc(x.actor)}, ${servicePill(x)} → ` +
+                `<span class="badge ${x.permission==='invoke'?'bg-success':'bg-secondary'}">${esc(x.permission)}</span>`)
+      .join("<br>") || "—";
+
+    const titleTxt = esc(p.service_name || p.cppn_name || p.cppn_id || "");
+    const subtitle = p.cppn_id ? ` title="${esc(p.cppn_id)}"` : "";
+    return `<tr>
+      <td><code${subtitle}>${titleTxt}</code></td>
+      <td>${esc(actors)}</td>
+      <td>${perms}</td>
+      <td class="text-end">
+        <a class="btn btn-sm btn-outline-primary" href="${buildEditUrl(p.cppn_id, diagramId)}">Edit</a>
+      </td>
+    </tr>`;
+  }
+
+  (async function load(){
+    const params = new URLSearchParams(window.location.search);
+    const diagramId = params.get("id");
+    const tbody = document.getElementById("tbody");
+    if(!diagramId){
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-4">diagram_id mancante</td></tr>`;
+      return;
+    }
+
+    const rC = await fetch(`${API_CPPN_BY_DIAGRAM}?id=${encodeURIComponent(diagramId)}`);
+    if(!rC.ok){
+      const t = await rC.text().catch(()=> "");
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger py-4">API error (CPPN): ${esc(t)}</td></tr>`;
+      return;
+    }
+    const dataC = await rC.json();
+    const rows = (dataC.results || []).map(p => rowHtml(p, diagramId)).join("")
+             || `<tr><td colspan="4" class="text-center text-muted py-4">No rbac CPPN found!</td></tr>`;
+    tbody.innerHTML = rows;
+  })();
+</script>
+
+</body>
+</html>

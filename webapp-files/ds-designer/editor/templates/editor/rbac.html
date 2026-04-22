@@ -1,0 +1,80 @@
+{% load static %}
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>RBAC Policies</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+
+  <div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h3 class="mb-0">RBAC Policies Management</h3>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'homepage' %}" class="btn btn-outline-primary">Homepage</a>
+    <a id="backBtn" class="btn btn-outline-secondary">Back</a>
+  </div>
+</div>
+
+
+  <div class="row g-3">
+    <!-- Atomic -->
+    <div class="col-12 col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="display-6 mb-2"><i class="bi bi-gear"></i></div>
+          <h5 class="card-title">Atomic Services</h5>
+          <p class="text-muted small mb-3">View rbac atomic services policies.</p>
+          <a href="{% url 'rbac_atomic' %}?id={{ request.GET.id }}" class="btn btn-primary">
+              View
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CPPS -->
+    <div class="col-12 col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="display-6 mb-2"><i class="bi bi-graph-up"></i></div>
+          <h5 class="card-title">CPPS Services</h5>
+          <p class="text-muted small mb-3">View CPPS policies.</p>
+          <!--{\% url 'rbac_policies_level' 'cpps' \%}-->
+          <a href="{% url 'rbac_cpps' %}?id={{ request.GET.id }}" class="btn btn-primary">View</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CPPN -->
+    <div class="col-12 col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="display-6 mb-2"><i class="bi bi-globe2"></i></div>
+          <h5 class="card-title">CPPN Services</h5>
+          <p class="text-muted small mb-3">View rbac CPPN policies.</p>
+          <!--{\% url 'rbac_policies_level' 'cppn' \%}-->
+          <a href="{% url 'rbac_cppn' %}?id={{ request.GET.id }}" class="btn btn-primary">View</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+</body>
+
+<script defer>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const diagramId = params.get('id');
+    const backBtn = document.getElementById('backBtn');
+    if (diagramId) backBtn.href = `/editor/?id=${encodeURIComponent(diagramId)}`;
+  });
+</script>
+
+</html>

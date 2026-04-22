@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:custom="http://custom.org/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="8.9.1">
+  <bpmn:collaboration id="Collaboration_0op0x5q">
+    <bpmn:participant id="Participant_SalesOffice" name="Sales Office" processRef="Process_SalesOffice" />
+    <bpmn:participant id="Participant_PurchasingOffice" name="Purchasing Office" processRef="Process_PurchasingOffice" />
+    <bpmn:participant id="Participant_SofaManufacturer" name="Sofa Manufacturer" processRef="Process_SofaManufacturer" />
+    <bpmn:participant id="Participant_Shipping" name="Shipping" processRef="Process_Shipping" />
+    <bpmn:participant id="Participant_AccessoriesOrderProvider" name="Accessories Order Provider" processRef="Process_AccessoriesOrderProvider" />
+    <bpmn:messageFlow id="Flow_SalesOffice_PurchasingOffice_Order" sourceRef="Activity_GenerateListOfComponents" targetRef="Activity_SendAccessoryOrder" />
+    <bpmn:messageFlow id="Flow_PurchasingOffice_AccessoriesOrderProvider_AccessoryOrder" sourceRef="Activity_SendAccessoryOrder" targetRef="Activity_ReceiveAccessoryOrder" />
+    <!-- Altri flussi di messaggio qui -->
+
+    <bpmn:process id="Process_SalesOffice" isExecutable="false">
+      <bpmn:laneSet id="LaneSet_1">
+        <bpmn:lane id="Lane_SalesOffice" name="Sales Office">
+          <bpmn:flowNodeRef>Event_StartManufacturing</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Activity_CheckOrder</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Gateway_OrderEval</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Event_OrderNotComplete</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Activity_GenerateListOfComponents</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Activity_EvaluateLoC</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Activity_EstimatePrice</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Activity_AssembleSofa</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Activity_ReceiveAccessories</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Activity_InvoiceSofaPackage</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Activity_SendInvoice</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Event_EndManufacturing</bpmn:flowNodeRef>
+
+          <bpmn:startEvent id="Event_StartManufacturing" name="Start Manufacturing">
+            <bpmn:outgoing>Flow_StartManufacturing_CheckOrder</bpmn:outgoing>
+          </bpmn:startEvent>
+          <bpmn:task id="Activity_CheckOrder" name="1. Check Order">
+            <bpmn:incoming>Flow_StartManufacturing_CheckOrder</bpmn:incoming>
+            <bpmn:outgoing>Flow_CheckOrder_OrderEval</bpmn:outgoing>
+          </bpmn:task>
+          <bpmn:exclusiveGateway id="Gateway_OrderEval" name="Order Eval">
+            <bpmn:incoming>Flow_CheckOrder_OrderEval</bpmn:incoming>
+            <bpmn:outgoing>Flow_OrderEval_InvalidOrder</bpmn:outgoing>
+            <bpmn:outgoing>Flow_OrderEval_OrderComplete</bpmn:outgoing>
+          </bpmn:exclusiveGateway>
+          <bpmn:endEvent id="Event_OrderNotComplete" name="Order not complete">
+            <bpmn:incoming>Flow_OrderEval_InvalidOrder</bpmn:incoming>
+          </bpmn:endEvent>
+          <bpmn:task id="Activity_GenerateListOfComponents" name="2. Generate List of Components">
+            <bpmn:incoming>Flow_OrderEval_OrderComplete</bpmn:incoming>
+            <bpmn:outgoing>Flow_GenerateListOfComponents_EvaluateLoC</bpmn:outgoing>
+            <bpmn:dataOutputAssociation id="DataOutputAssociation_09fgb2f">
+              <bpmn:sourceRef>Activity_GenerateListOfComponents</bpmn:sourceRef>
+              <bpmn:targetRef>DataStoreReference_Order</bpmn:targetRef>
+            </bpmn:dataOutputAssociation>
+            <bpmn:dataOutputAssociation id="DataOutputAssociation_0r6n41t">
+              <bpmn:sourceRef>Activity_GenerateListOfComponents</bpmn:sourceRef>
+              <bpmn:targetRef>DataStoreReference_LoC</bpmn:targetRef>
+            </bpmn:dataOutputAssociation>
+            <bpmn:dataOutputAssociation id="DataOutputAssociation_1d7f4g2">
+              <bpmn:sourceRef>Activity_GenerateListOfComponents</bpmn:sourceRef>
+              <bpmn:targetRef>DataStoreReference_AccessCompSpec</bpmn:targetRef>
+            </bpmn:dataOutputAssociation>
+          </bpmn:task>
+          <bpmn:task id="Activity_EvaluateLoC" name="3. Evaluate LoC">
+            <bpmn:incoming>Flow_GenerateListOfComponents_EvaluateLoC</bpmn:incoming>
+            <bpmn:outgoing>Flow_EvaluateLoC_EstimatePrice</bpmn:outgoing>
+            <bpmn:dataInputAssociation id="DataInputAssociation_05d1s0h">
+              <bpmn:sourceRef>DataStoreReference_LoC</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_EvaluateLoC</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+            <bpmn:dataInputAssociation id="DataInputAssociation_04q2h8j">
+              <bpmn:sourceRef>DataStoreReference_AccessCompSpec</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_EvaluateLoC</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+            <bpmn:dataInputAssociation id="DataInputAssociation_08g1q3j">
+              <bpmn:sourceRef>DataStoreReference_Order</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_EvaluateLoC</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+            <bpmn:dataOutputAssociation id="DataOutputAssociation_1x4y9j6">
+              <bpmn:sourceRef>Activity_EvaluateLoC</bpmn:sourceRef>
+              <bpmn:targetRef>DataStoreReference_LoC</bpmn:targetRef>
+            </bpmn:dataOutputAssociation>
+          </bpmn:task>
+          <bpmn:task id="Activity_EstimatePrice" name="4. Estimate Price">
+            <bpmn:incoming>Flow_EvaluateLoC_EstimatePrice</bpmn:incoming>
+            <bpmn:outgoing>Flow_EstimatePrice_AssembleSofa</bpmn:outgoing>
+            <bpmn:dataInputAssociation id="DataInputAssociation_0q2w4e8">
+              <bpmn:sourceRef>DataStoreReference_Bill</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_EstimatePrice</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+          </bpmn:task>
+          <bpmn:task id="Activity_AssembleSofa" name="17. Assemble sofa">
+            <bpmn:incoming>Flow_EstimatePrice_AssembleSofa</bpmn:incoming>
+            <bpmn:outgoing>Flow_AssembleSofa_ReceiveAccessories</bpmn:outgoing>
+            <bpmn:dataInputAssociation id="DataInputAssociation_0f0d6g5">
+              <bpmn:sourceRef>DataStoreReference_BackComp</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_AssembleSofa</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+            <bpmn:dataInputAssociation id="DataInputAssociation_0g2s1h9">
+              <bpmn:sourceRef>DataStoreReference_AccessComp</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_AssembleSofa</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+          </bpmn:task>
+          <bpmn:task id="Activity_ReceiveAccessories" name="16. Receive accessories">
+            <bpmn:incoming>Flow_AssembleSofa_ReceiveAccessories</bpmn:incoming>
+            <bpmn:outgoing>Flow_ReceiveAccessories_InvoiceSofaPackage</bpmn:outgoing>
+            <bpmn:dataOutputAssociation id="DataOutputAssociation_0a2b4c8">
+              <bpmn:sourceRef>Activity_ReceiveAccessories</bpmn:sourceRef>
+              <bpmn:targetRef>DataStoreReference_Accessory</bpmn:targetRef>
+            </bpmn:dataOutputAssociation>
+          </bpmn:task>
+          <bpmn:task id="Activity_InvoiceSofaPackage" name="19. Invoice SofaPackage">
+            <bpmn:incoming>Flow_ReceiveAccessories_InvoiceSofaPackage</bpmn:incoming>
+            <bpmn:outgoing>Flow_InvoiceSofaPackage_SendInvoice</bpmn:outgoing>
+            <bpmn:dataInputAssociation id="DataInputAssociation_0h4i6j1">
+              <bpmn:sourceRef>DataStoreReference_SofaPackage</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_InvoiceSofaPackage</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+            <bpmn:dataInputAssociation id="DataInputAssociation_0k3l5m7">
+              <bpmn:sourceRef>DataStoreReference_Bill</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_InvoiceSofaPackage</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+          </bpmn:task>
+          <bpmn:task id="Activity_SendInvoice" name="20. Send Invoice">
+            <bpmn:incoming>Flow_InvoiceSofaPackage_SendInvoice</bpmn:incoming>
+            <bpmn:outgoing>Flow_SendInvoice_EndManufacturing</bpmn:outgoing>
+            <bpmn:dataInputAssociation id="DataInputAssociation_0n6p8q2">
+              <bpmn:sourceRef>DataStoreReference_Invoice</bpmn:sourceRef>
+              <bpmn:targetRef>Activity_SendInvoice</bpmn:targetRef>
+            </bpmn:dataInputAssociation>
+          </bpmn:task>
+          <bpmn:endEvent id="Event_EndManufacturing" name="End manufacturing">
+            <bpmn:incoming>Flow_SendInvoice_EndManufacturing</bpmn:incoming>
+          </bpmn:endEvent>
+
+          <bpmn:sequenceFlow id="Flow_StartManufacturing_CheckOrder" sourceRef="Event_StartManufacturing" targetRef="Activity_CheckOrder" />
+          <bpmn:sequenceFlow id="Flow_CheckOrder_OrderEval" sourceRef="Activity_CheckOrder" targetRef="Gateway_OrderEval" />
+          <bpmn:sequenceFlow id="Flow_OrderEval_InvalidOrder" sourceRef="Gateway_OrderEval" targetRef="Event_OrderNotComplete" name="Invalid order" />
+          <bpmn:sequenceFlow id="Flow_OrderEval_OrderComplete" sourceRef="Gateway_OrderEval" targetRef="Activity_GenerateListOfComponents" name="Order complete" />
+          <bpmn:sequenceFlow id="Flow_GenerateListOfComponents_EvaluateLoC" sourceRef="Activity_GenerateListOfComponents" targetRef="Activity_EvaluateLoC" />
+          <bpmn:sequenceFlow id="Flow_EvaluateLoC_EstimatePrice" sourceRef="Activity_EvaluateLoC" targetRef="Activity_EstimatePrice" />
+          <bpmn:sequenceFlow id="Flow_EstimatePrice_AssembleSofa" sourceRef="Activity_EstimatePrice" targetRef="Activity_AssembleSofa" />
+          <bpmn:sequenceFlow id="Flow_AssembleSofa_ReceiveAccessories" sourceRef="Activity_AssembleSofa" targetRef="Activity_ReceiveAccessories" />
+          <bpmn:sequenceFlow id="Flow_ReceiveAccessories_InvoiceSofaPackage" sourceRef="Activity_ReceiveAccessories" targetRef="Activity_InvoiceSofaPackage" />
+          <bpmn:sequenceFlow id="Flow_InvoiceSofaPackage_SendInvoice" sourceRef="Activity_InvoiceSofaPackage" targetRef="Activity_SendInvoice" />
+          <bpmn:sequenceFlow id="Flow_SendInvoice_EndManufacturing" sourceRef="Activity_SendInvoice" targetRef="Event_EndManufacturing" />
+        </bpmn:lane>
+      </bpmn:laneSet>
+    </bpmn:process>
+
+    <!-- Data Objects in Sales Office Pool -->
+    <bpmn:dataStoreReference id="DataStoreReference_Order" name="Order" />
+    <bpmn:dataStoreReference id="DataStoreReference_LoC" name="LoC" />
+    <bpmn:dataStoreReference id="DataStoreReference_AccessCompSpec" name="AccessCompSpec" />
+    <bpmn:dataStoreReference id="DataStoreReference_Bill" name="Bill" />
+    <bpmn:dataStoreReference id="DataStoreReference_BackComp" name="BackComp" />
+    <bpmn:dataStoreReference id="DataStoreReference_AccessComp" name="AccessComp" />
+    <bpmn:dataStoreReference id="DataStoreReference_SofaPackage" name="SofaPackage" />
+    <bpmn:dataStoreReference id="DataStoreReference_Invoice" name="Invoice" />
+
+    <bpmn:process id="Process_PurchasingOffice" isExecutable="false">
+        <bpmn:laneSet id="LaneSet_2">
+            <bpmn:lane id="Lane_PurchasingOffice" name="Purchasing Office">
+                <bpmn:flowNodeRef>Activity_SendAccessoryOrder</bpmn:flowNodeRef>
+                <!-- Altre attività e gateway qui -->
+                <bpmn:task id="Activity_SendAccessoryOrder" name="8. Send accessory order">
+                    <bpmn:incoming>Flow_SalesOffice_PurchasingOffice_Order</bpmn:incoming>
+                    <bpmn:outgoing>Flow_PurchasingOffice_AccessoriesOrderProvider_AccessoryOrder</bpmn:outgoing>
+                    <bpmn:dataInputAssociation id="DataInputAssociation_0s1a3d6">
+                      <bpmn:sourceRef>DataStoreReference_Order</bpmn:sourceRef>
+                      <bpmn:targetRef>Activity_SendAccessoryOrder</bpmn:targetRef>
+                    </bpmn:dataInputAssociation>
+                    <bpmn:dataInputAssociation id="DataInputAssociation_0e5f7g8">
+                      <bpmn:sourceRef>DataStoreReference_AccessCompSpec</bpmn:sourceRef>
+                      <bpmn:targetRef>Activity_SendAccessoryOrder</bpmn:targetRef>
+                    </bpmn:dataInputAssociation>
+                </bpmn:task>
+            </bpmn:lane>
+        </bpmn:laneSet>
+    </bpmn:process>
+
+    <!-- Data Objects in Purchasing Office Pool -->
+    <!-- ... -->
+
+    <bpmn:process id="Process_SofaManufacturer" isExecutable="false">
+        <!-- ... -->
+    </bpmn:process>
+
+    <!-- Data Objects in Sofa Manufacturer Pool -->
+    <!-- ... -->
+
+    <bpmn:process id="Process_Shipping" isExecutable="false">
+        <!-- ... -->
+    </bpmn:process>
+
+    <!-- Data Objects in Shipping Pool -->
+    <!-- ... -->
+
+    <bpmn:process id="Process_AccessoriesOrderProvider" isExecutable="false">
+        <!-- ... -->
+    </bpmn:process>
+
+    <!-- Data Objects in Accessories Order Provider Pool -->
+    <!-- ... -->
+
+  </bpmn:collaboration>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0op0x5q">
+      <!-- Qui vanno le definizioni grafiche per ogni elemento -->
+      <!-- Esempio per il pool "Sales Office" -->
+      <bpmndi:BPMNShape id="Participant_SalesOffice_di" bpmnElement="Participant_SalesOffice" isHorizontal="true">
+        <dc:Bounds x="150" y="20" width="3210" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_SalesOffice_di" bpmnElement="Lane_SalesOffice" isHorizontal="true">
+        <dc:Bounds x="180" y="20" width="3180" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_StartManufacturing_di" bpmnElement="Event_StartManufacturing">
+        <dc:Bounds x="202" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="165" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_CheckOrder_di" bpmnElement="Activity_CheckOrder">
+        <dc:Bounds x="280" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_OrderEval_di" bpmnElement="Gateway_OrderEval" isMarkerVisible="true">
+        <dc:Bounds x="435" y="115" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_OrderNotComplete_di" bpmnElement="Event_OrderNotComplete">
+        <dc:Bounds x="502" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="480" y="45" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_GenerateListOfComponents_di" bpmnElement="Activity_GenerateListOfComponents">
+        <dc:Bounds x="500" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <!-- ... e così via per tutti gli altri elementi del Sales Office e degli altri Pool/Lane -->
+
+      <!-- Flussi di sequenza nel Sales Office -->
+      <bpmndi:BPMNEdge id="Flow_StartManufacturing_CheckOrder_di" bpmnElement="Flow_StartManufacturing_CheckOrder">
+        <di:waypoint x="238" y="140" />
+        <di:waypoint x="280" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CheckOrder_OrderEval_di" bpmnElement="Flow_CheckOrder_OrderEval">
+        <di:waypoint x="380" y="140" />
+        <di:waypoint x="435" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_OrderEval_InvalidOrder_di" bpmnElement="Flow_OrderEval_InvalidOrder">
+        <di:waypoint x="460" y="115" />
+        <di:waypoint x="460" y="89" />
+        <di:waypoint x="502" y="89" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="470" y="90" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_OrderEval_OrderComplete_di" bpmnElement="Flow_OrderEval_OrderComplete">
+        <di:waypoint x="460" y="165" />
+        <di:waypoint x="460" y="230" />
+        <di:waypoint x="500" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="470" y="200" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <!-- ... e tutti gli altri flussi di sequenza e messaggi -->
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

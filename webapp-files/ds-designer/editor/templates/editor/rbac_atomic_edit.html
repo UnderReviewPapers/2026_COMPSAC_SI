@@ -1,0 +1,329 @@
+{% load static %}
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Edit Atomic Policy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+
+  <!-- Header + back -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">Edit Atomic Policy</h4>
+    <a href="{% url 'rbac_atomic' %}?id={{ diagram_id }}" class="btn btn-outline-secondary btn-sm">Back</a>
+  </div>
+
+  <!-- Info chiave (readonly) -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Diagram Name</label>
+          <input type="hidden" id="diagram_id" value="{{ diagram_id }}">
+          <input type="hidden" id="atomic_id"  value="{{ atomic_id }}">
+
+          <input id="diagram_name" class="form-control" value="{{ diagram_name }}" readonly>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Atomic ID</label>
+          <input id="atomic_name" class="form-control" value="{{ atomic_name }}" readonly>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form (proforma) -->
+  <form class="card">
+    <div class="card-body">
+      <div id="alertHolder" class="mb-2"></div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Service Name</label>
+          <input id="service_name" class="form-control" placeholder="es. Send Data for Sales Order" readonly>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Atomic Type</label>
+          <select id="atomic_type" class="form-select" disabled>
+            <option value="collect">collect</option>
+            <option value="process&monitor">process&monitor</option>
+            <option value="dispatch">dispatch</option>
+            <option value="display">display</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Owner</label>
+          <input id="owner" class="form-control" placeholder="es. Production Leader" readonly>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="d-flex align-items-center justify-content-between">
+        <h6 class="mb-0">Permissions</h6>
+        <button type="button" class="btn btn-success" id="addPermBtn">
+          + Add permission
+        </button>
+      </div>
+      <div id="permsList" class="mt-3"></div>
+
+
+      <div class="text-end mt-4">
+        <button type="button" class="btn btn-primary" disabled>Save</button>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+<script>
+  const API_GET_BY_ATOMIC_ID = "{% url 'rbac_atomic_by_atomic_id' %}";
+
+  function esc(s){ return (s ?? '').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function alertHtml(kind, msg){
+    return `<div class="alert alert-${kind} alert-dismissible fade show" role="alert">
+      ${esc(msg)}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>`;
+  }
+
+  async function fetchActors(diagramId){
+    const url = "{% url 'diagram_actors' %}" + `?diagram_id=${encodeURIComponent(diagramId)}`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("Cannot load actors");
+    const data = await r.json();
+    return data.actors || [];
+  }
+
+
+  // cache attori per non rifare fetch
+  let _actorsCache = null;
+  async function getActors(diagramId){
+    if (_actorsCache) return _actorsCache;
+    const list = await fetchActors(diagramId);
+    _actorsCache = Array.from(new Set(list)).sort();
+    return _actorsCache;
+  }
+
+  // Rende una riga permission
+  function permissionRowHTML({rowId, actors, actor, permission="invoke", readonly=false, ownerActor=null}){
+    const options = actors
+      // non mostrare l’owner nel menu (non modificabile)
+      .filter(a => a !== ownerActor)
+      .map(a => `<option value="${esc(a)}" ${a===actor?'selected':''}>${esc(a)}</option>`)
+      .join("");
+
+    const selectActor = `
+      <select class="form-select form-select-sm perm-actor" ${readonly ?'disabled': ''} ${actor?'':'aria-placeholder="Select actor"'}>
+        <option value="" ${actor?'':'selected'} disabled>— select actor —</option>
+        ${options}
+      </select>`;
+
+    const selectPerm = `
+      <select class="form-select form-select-sm perm-perm" ${readonly?'disabled':''}>
+        <option value="invoke" selected>invoke</option>
+      </select>`;
+
+    // per la riga owner mostriamo input readonly
+    const ownerRow = readonly ? `
+      <input class="form-control form-control-sm" value="${esc(actor)}" readonly>
+    ` : selectActor;
+
+    const removeBtn = readonly ? "" :
+  `<button type="button" class="btn btn-danger btn-sm" data-remove="${rowId}" title="Revoke">
+     <i class="bi bi-trash"></i>
+   </button>`;
+
+
+    return `
+    <div class="row g-2 align-items-end mb-2 perm-row" data-row="${rowId}">
+      <div class="col-md-8">
+        <label class="form-label form-label-sm">Actor</label>
+        ${ownerRow}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label form-label-sm">Permission</label>
+        ${selectPerm}
+      </div>
+      <div class="col-md-1 text-end">
+        ${removeBtn}
+      </div>
+    </div>`;
+  }
+
+  function readCurrentActors(){
+    return [...document.querySelectorAll("#permsList .perm-row")]
+      .map(r => r.querySelector(".perm-actor")?.value?.trim())
+      .filter(Boolean);
+  }
+
+  function addPermissionRow({actors, actor="", readonly=false, ownerActor=null}){
+    const id = crypto.randomUUID();
+    const html = permissionRowHTML({rowId:id, actors, actor, readonly, ownerActor});
+    document.getElementById("permsList").insertAdjacentHTML("beforeend", html);
+  }
+
+  // Gestione remove (delegation)
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-remove]");
+    if (!btn) return;
+    const rowId = btn.getAttribute("data-remove");
+    const row = document.querySelector(`#permsList .perm-row[data-row="${rowId}"]`);
+    if (row) row.remove();
+  });
+
+  // Add permission: aggiunge riga vuota con menu attori
+  document.getElementById("addPermBtn").addEventListener("click", async () => {
+    const diagramId = document.getElementById("diagram_id").value;
+    const owner = document.getElementById("owner").value.trim();
+    const actors = await getActors(diagramId);
+
+    // evita duplicati *al cambio selezione*, ma qui lasciamo aggiungere la riga vuota
+    addPermissionRow({actors, actor:"", readonly:false, ownerActor:owner});
+  });
+
+  // Evita duplicati quando si seleziona un actor
+  document.addEventListener("change", (e) => {
+    if (!e.target.classList.contains("perm-actor")) return;
+    const chosen = e.target.value;
+    const current = readCurrentActors();
+    const duplicates = current.filter(a => a === chosen);
+    if (duplicates.length > 1){
+      // resetta la select che ha creato il duplicato
+      e.target.value = "";
+      e.target.closest(".perm-row").classList.add("is-invalid");
+      setTimeout(() => e.target.closest(".perm-row")?.classList.remove("is-invalid"), 1200);
+    }
+  });
+
+  // ---- Caricamento iniziale policy + render permissions
+  async function loadPolicy(){
+  const atomicId  = document.getElementById("atomic_id").value;
+  const diagramId = document.getElementById("diagram_id").value;
+  const alertHolder = document.getElementById("alertHolder");
+  const permsList = document.getElementById("permsList");
+
+  const qs = new URLSearchParams({ atomic_id: atomicId });
+  if (diagramId) qs.set("diagram_id", diagramId);
+
+  const res = await fetch(`${API_GET_BY_ATOMIC_ID}?${qs.toString()}`);
+  const actors = await getActors(diagramId);
+
+  if (res.status === 404){
+    const owner = document.getElementById("owner").value.trim();
+    permsList.innerHTML = "";
+    if (owner){
+      addPermissionRow({actors, actor:owner, readonly:true, ownerActor:owner});
+    }
+    return;
+  }
+  if (!res.ok){
+    const txt = await res.text().catch(()=> '');
+    alertHolder.innerHTML = alertHtml('danger', `Errore caricamento (${res.status}): ${esc(txt)}`);
+    permsList.innerHTML = "";
+    return;
+  }
+
+  const data = await res.json();
+
+  // aggiorna intestazioni/nomi se presenti
+  if (data.diagram_name) {
+    const dn = document.getElementById("diagram_name");
+    if (dn) dn.value = data.diagram_name;
+  }
+  if (data.service_name || data.atomic_name) {
+    const sname = data.service_name || data.atomic_name;
+    const an = document.getElementById("atomic_name");
+    if (an) an.value = sname;
+    // opzionale: mettilo anche nel titolo
+    const h = document.querySelector("h4.mb-0");
+    if (h) h.textContent = `Edit Atomic Policy — ${sname}`;
+  }
+
+  // campi base del form
+  document.getElementById("service_name").value = data.service_name || data.atomic_name || '';
+  document.getElementById("atomic_type").value  = data.atomic_type || 'collect';
+  document.getElementById("owner").value        = data.owner || '';
+
+  const owner = data.owner || '';
+  permsList.innerHTML = "";
+
+  if (owner){
+    addPermissionRow({actors, actor:owner, readonly:true, ownerActor:owner});
+  }
+
+  const extra = Array.isArray(data.permissions) ? data.permissions.filter(p => p.actor !== owner) : [];
+  for (const p of extra){
+    addPermissionRow({actors, actor:p.actor, readonly:false, ownerActor:owner});
+  }
+}
+
+  loadPolicy();
+</script>
+
+<script>
+  const API_UPDATE_PERMS = "{% url 'rbac_atomic_update_permissions' %}";
+
+  function getCookie(name){
+    const v = `; ${document.cookie}`.split(`; ${name}=`); 
+    if (v.length === 2) return v.pop().split(';').shift();
+  }
+  function alertHtml(kind, msg){
+    return `<div class="alert alert-${kind} alert-dismissible fade show" role="alert">
+      ${msg}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>`;
+  }
+
+  function readExtraPermissionActors(owner){
+    const rows = [...document.querySelectorAll("#permsList .perm-row")];
+    const actors = [];
+    for (const r of rows){
+      const sel = r.querySelector(".perm-actor");
+      if (!sel || sel.disabled) continue; // owner = disabled → saltato
+      const val = (sel.value || "").trim();
+      if (val && val !== owner) actors.push(val);
+    }
+    return [...new Set(actors)];
+  }
+
+  // Attiva Save
+  const saveBtn = document.querySelector('button.btn.btn-primary');
+  saveBtn.disabled = false;
+  saveBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const diagram_id = document.getElementById("diagram_id").value.trim();
+    const atomic_id  = document.getElementById("atomic_id").value.trim();
+    const owner      = document.getElementById("owner").value.trim();
+
+    const permission_actors = readExtraPermissionActors(owner);
+
+    const r = await fetch(API_UPDATE_PERMS, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken") || ""
+      },
+      body: JSON.stringify({ diagram_id, atomic_id, permission_actors })
+    });
+
+    const holder = document.getElementById("alertHolder") || (function(){
+      const div = document.createElement('div'); div.id = "alertHolder";
+      document.querySelector(".card .card-body").prepend(div); return div;
+    })();
+
+    const json = await r.json().catch(()=> ({}));
+    if (!r.ok){
+      holder.innerHTML = alertHtml('danger', json.detail || 'Saving error!');
+      return;
+    }
+    holder.innerHTML = alertHtml('success', 'Updated permissions.');
+  });
+</script>
+
+<!-- Bootstrap Icons (per il trash) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</body>
+</html>

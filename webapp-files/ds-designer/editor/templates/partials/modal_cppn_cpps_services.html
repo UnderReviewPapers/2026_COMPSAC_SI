@@ -1,0 +1,89 @@
+{% load static %}
+
+<div class="modal fade" id="groupTypeModal" tabindex="-1" aria-labelledby="groupTypeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">CPPN/CPPS Configuration</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Workflow Type -->
+        <div class="mb-3">
+          <label for="workflowTypeSelect" class="form-label">Workflow Type</label>
+          <select class="form-select" id="workflowTypeSelect">
+            <option value="sequence">Sequence</option>
+            <option value="parallel">Parallel</option>
+            <option value="loop">Loop</option>
+            <option value="exclusive">Exclusive</option>
+          </select>
+        </div>
+
+        <!-- Group Type -->
+        <div class="mb-3">
+          <label for="groupTypeSelect" class="form-label">Group Type</label>
+          <select class="form-select" id="groupTypeSelect" onchange="toggleCPPNFields()">
+            <option value="CPPS">CPPS</option>
+            <option value="CPPN">CPPN</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label for="groupDescription" class="form-label">Description</label>
+          <textarea class="form-control" id="groupDescription" rows="2"></textarea>
+        </div>
+
+        <!-- Actor (for CPPS) -->
+        <div class="mb-3" id="cppsActorField">
+          <label for="singleActor" class="form-label">Actor (required for CPPS)</label>
+          <input type="text" class="form-control-plaintext bg-light text-muted" id="singleActor" readonly />
+        </div>
+
+        <!-- CPPN-specific fields -->
+        <div id="cppnFields" style="display: none;">
+          <div class="mb-3">
+            <label for="actorsInvolved" class="form-label">Actors Involved (comma separated)</label>
+            <input type="text" class="form-control-plaintext bg-light text-muted" id="actorsInvolved" readonly />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">GDPR Mapping (Actor → Role)</label>
+            <div id="gdprMapContainer"></div>
+            <span id="gdprNote" class="text-muted" style="font-size: 0.9em;">Actors have been auto-detected. Please enter roles only.</span>
+          </div>
+        
+
+          <div class="mb-3" id="cppnBusinessGoalField" style="display:none;">
+            <label for="businessGoal" class="form-label">Business Goal</label>
+            <input type="text" class="form-control" id="businessGoal" placeholder="Describe the business objective" />
+          </div>
+        </div>
+        
+        <hr>
+        <h6 class="mb-3 mt-4">Properties</h6>
+
+        <div class="mb-3">
+          <label for="groupName" class="form-label">Service Name</label>
+          <input type="text" class="form-control" id="groupName" />
+        </div>
+
+        <!-- Endpoint section, visible only for CPPS -->
+        <div class="mb-3" id="cppsEndpoints">
+          <label class="form-label">Endpoints (method + URL)</label>
+          <div id="endpointsContainer"></div>
+          <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addEndpointRow()">+ Add Endpoint</button>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="save-composite-button">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="{% static 'js/save_cppn_cpps_service.js' %}"></script>

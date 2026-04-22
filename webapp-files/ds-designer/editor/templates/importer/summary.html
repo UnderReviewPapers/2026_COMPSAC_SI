@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Import Summary{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+  <h2 class="mb-4">Diagram imported successfully!</h2>
+
+  <p><strong>Diagram ID:</strong> {{ diagram_id }}</p>
+
+  <div class="row justify-content-center my-5">
+    <div class="col-4">
+      <div class="card border-success mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Atomic Services</h5>
+          <p class="display-4 text-success">{{ atomic }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card border-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">CPPS</h5>
+          <p class="display-4 text-primary">{{ cpps }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card border-warning mb-3">
+        <div class="card-body">
+          <h5 class="card-title">CPPN</h5>
+          <p class="display-4 text-warning">{{ cppn }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="/editor/?id={{ diagram_id }}" class="btn btn-outline-dark">
+   Go to editor
+  </a>
+</div>
+{% endblock %}

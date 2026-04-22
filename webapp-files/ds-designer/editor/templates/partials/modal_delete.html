@@ -1,0 +1,40 @@
+<div class="modal fade" id="deleteItemModal" tabindex="-1" aria-labelledby="deleteItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteItemModalLabel">Confirm deleting</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          You are deleting <span id="deleteItemType" class="fw-bold text-primary"></span> 
+          with ID <span id="deleteItemId" class="fw-bold text-monospace"></span>.
+        </p>
+
+        <ul class="list-group mb-3">
+          <li class="list-group-item">
+            <strong>Name:</strong> <span id="deleteItemName" class="text-monospace"></span>
+          </li>
+          <li class="list-group-item">
+            <strong>Info:</strong> <span id="deleteItemDescription"></span>
+          </li>
+        </ul>
+
+        <div class="alert alert-warning d-flex align-items-center" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          This operation is irreversible.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteItemBtn">
+          <i class="bi bi-trash"></i> Delete
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

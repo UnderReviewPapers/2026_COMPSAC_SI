@@ -1,0 +1,728 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Data Services Designer{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js@18.3.1/dist/assets/diagram-js.css" />
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js@18.3.1/dist/assets/bpmn-font/css/bpmn.css" />
+  
+  <style>
+      #optimized-canvas .djs-palette {
+          display: none !important;
+      }
+
+      #optimized-canvas .djs-context-pad {
+          display: none !important;
+      }
+      #optimized-canvas {
+          height: 500px;
+          width: 100%;
+          border: 1px solid #ccc;
+          background-color: #f8f9fa;
+      }
+      .bjs-powered-by { display: none; }
+      
+      /* Stile per lo slider */
+      #iteration-slider-container {
+          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+          padding: 25px;
+          border-radius: 12px;
+          border: 2px solid #dee2e6;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          height: fit-content;
+      }
+      
+      .iteration-info {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-bottom: 15px;
+      }
+      
+      .iteration-badge {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          padding: 8px 20px;
+          border-radius: 25px;
+          font-weight: bold;
+          font-size: 1rem;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          text-align: center;
+      }
+      
+      .gamma-badge {
+          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          color: white;
+          padding: 8px 20px;
+          border-radius: 25px;
+          font-weight: 600;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          text-align: center;
+      }
+      
+      .services-badge {
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+          color: white;
+          padding: 8px 20px;
+          border-radius: 25px;
+          font-weight: 600;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          text-align: center;
+      }
+      
+      .best-iteration-marker {
+          background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+          color: #333;
+          padding: 6px 15px;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          font-weight: bold;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          animation: pulse 2s infinite;
+          text-align: center;
+      }
+      
+      @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+      }
+      
+      /* Stile avanzato per lo slider */
+      .slider-wrapper {
+          position: relative;
+          padding: 20px 0;
+      }
+      
+      #iteration-slider {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 12px;
+          border-radius: 10px;
+          background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+          outline: none;
+          opacity: 0.9;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      }
+      
+      #iteration-slider:hover {
+          opacity: 1;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+          transform: scaleY(1.1);
+      }
+      
+      /* Chrome, Safari, Edge */
+      #iteration-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+          border: 3px solid #667eea;
+          cursor: grab;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+          transition: all 0.2s ease;
+      }
+      
+      #iteration-slider::-webkit-slider-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+      }
+      
+      #iteration-slider::-webkit-slider-thumb:active {
+          cursor: grabbing;
+          transform: scale(1.1);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-color: #fff;
+      }
+      
+      /* Firefox */
+      #iteration-slider::-moz-range-thumb {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+          border: 3px solid #667eea;
+          cursor: grab;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+          transition: all 0.2s ease;
+      }
+      
+      #iteration-slider::-moz-range-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+      }
+      
+      #iteration-slider::-moz-range-thumb:active {
+          cursor: grabbing;
+          transform: scale(1.1);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-color: #fff;
+      }
+      
+      /* Progress effect */
+      #iteration-slider::-webkit-slider-runnable-track {
+          height: 12px;
+          border-radius: 10px;
+      }
+      
+      #iteration-slider::-moz-range-track {
+          height: 12px;
+          border-radius: 10px;
+          background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+      }
+      
+      /* Ticks sotto lo slider */
+      .slider-ticks {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 10px;
+          font-size: 0.85rem;
+      }
+      
+      .slider-tick {
+          color: #666;
+          font-weight: 500;
+          text-align: center;
+          flex: 1;
+      }
+
+      /* ============ STILI AI CHAT (NUOVO) ============ */
+      .ai-chat-container {
+          display: flex;
+          flex-direction: column;
+          height: 600px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          background: #fff;
+          margin-top: 20px;
+      }
+
+      .ai-chat-header {
+          padding: 15px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border-radius: 8px 8px 0 0;
+      }
+
+      .ai-chat-subtitle {
+          font-size: 0.9em;
+          opacity: 0.9;
+          margin-top: 5px;
+      }
+
+      .ai-chat-messages {
+          flex: 1;
+          overflow-y: auto;
+          padding: 20px;
+          background: #f9fafb;
+      }
+
+      .ai-message {
+          display: flex;
+          margin-bottom: 15px;
+          animation: slideIn 0.3s ease-out;
+      }
+
+      .ai-message.user {
+          justify-content: flex-end;
+      }
+
+      .ai-message.user .message-content {
+          background: #667eea;
+          color: white;
+      }
+
+      .ai-message.assistant .message-content {
+          background: white;
+          border: 1px solid #e5e7eb;
+      }
+
+      .message-icon {
+          font-size: 1.5em;
+          margin: 0 10px;
+      }
+
+      .message-content {
+          max-width: 70%;
+          padding: 12px 16px;
+          border-radius: 12px;
+          line-height: 1.5;
+      }
+
+      .ai-chat-input-container {
+          padding: 15px;
+          border-top: 1px solid #ddd;
+          display: flex;
+          gap: 10px;
+      }
+
+      .ai-chat-input {
+          flex: 1;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          resize: none;
+          font-family: inherit;
+      }
+
+      .btn-send {
+          padding: 10px 25px;
+          background: #667eea;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 600;
+      }
+
+      .btn-send:hover {
+          background: #5568d3;
+      }
+
+      .typing-dots {
+          display: flex;
+          gap: 4px;
+          padding: 10px;
+      }
+
+      .typing-dots span {
+          width: 8px;
+          height: 8px;
+          background: #667eea;
+          border-radius: 50%;
+          animation: bounce 1.4s infinite;
+      }
+
+      .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+      .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+      @keyframes bounce {
+          0%, 60%, 100% { transform: translateY(0); }
+          30% { transform: translateY(-10px); }
+      }
+
+      @keyframes slideIn {
+          from {
+              opacity: 0;
+              transform: translateY(10px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      .service-title {
+          font-weight: bold;
+          color: #667eea;
+          margin-top: 10px;
+      }
+
+      .section-highlight {
+          font-weight: bold;
+          font-size: 1.1em;
+          margin: 15px 0 10px 0;
+          color: #764ba2;
+      }
+
+      .btn-reset-chat {
+          padding: 5px 15px;
+          background: #e5e7eb;
+          color: #374151;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 0.9em;
+      }
+
+      .btn-reset-chat:hover {
+          background: #d1d5db;
+      }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid d-flex flex-column">
+  <div class="row bg-white shadow-sm p-2">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Data Services Designer</h5>
+      <div class="d-flex gap-2">
+
+        <button class="btn btn-warning btn-m" id="analyze-button" type="button" onclick="runAnalysis()">
+          <i class="bi bi-graph-up"></i> Analyze
+        </button>
+
+        <button type="button" class="btn btn-primary btn-m" id="generate-button">
+            <i class="bi bi-robot"></i> Generate
+        </button>
+
+
+        <a href="{% url 'homepage' %}" class="btn btn-outline-primary btn-m">
+        <i class="bi bi-house-door"></i> Home
+        </a>
+
+      <button class="btn btn-success btn-m" id="save-button1">
+        <i class="bi bi-floppy"></i> Save
+      </button>
+
+      <button class="btn btn-secondary btn-m" id="reset-button">
+        <i class="bi bi-arrow-counterclockwise"></i> Reset
+      </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row flex-grow-1">
+<aside class="col-2 bg-white shadow-sm p-3 overflow-auto">
+  <h6 class="fw-bold mb-3">Available Services</h6>
+
+  <div class="accordion" id="serviceAccordion">
+    <!-- Atomic -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingAtomic">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAtomic">
+          Atomic Services
+        </button>
+      </h2>
+      <div id="collapseAtomic" class="accordion-collapse collapse" data-bs-parent="#serviceAccordion">
+        <ul class="list-group list-group-flush" id="atomicServiceList"></ul>
+      </div>
+    </div>
+
+    <!-- CPPS -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingCPPS">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCPPS">
+          CPPS Services
+        </button>
+      </h2>
+      <div id="collapseCPPS" class="accordion-collapse collapse" data-bs-parent="#serviceAccordion">
+        <ul class="list-group list-group-flush" id="cppsServiceList"></ul>
+      </div>
+    </div>
+
+    <!-- CPPN -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingCPPN">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCPPN">
+          CPPN Services
+        </button>
+      </h2>
+      <div id="collapseCPPN" class="accordion-collapse collapse" data-bs-parent="#serviceAccordion">
+        <ul class="list-group list-group-flush" id="cppnServiceList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!--Rbac policies button-->
+    {% if request and request.GET.id %}
+      <div class="mt-4">
+        <a href="{% url 'rbac_policies' %}?id={{ request.GET.id|urlencode }}"
+          class="btn btn-outline-primary">
+          <i class="bi bi-shield-lock"></i> RBAC Policies
+        </a>
+      </div>
+    {% endif %}
+
+</aside>
+
+    <main class="col-10 p-3">
+      <div id="canvas"></div>
+    </main>
+  </div>
+
+  <footer class="bg-white shadow-sm p-3">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="fw-bold mb-0">Details</h5>
+    <button class="btn btn-primary btn-sm" id="edit-details-button">
+      <i class="bi bi-pencil"></i> Edit
+    </button>
+  </div>
+
+    <div class="details-section mt-3">
+      <h6>Input</h6>
+      <ul id="input-list"></ul>
+
+      <h6>Output</h6>
+      <ul id="output-list"></ul>
+
+      <div id="extra-details" class="mt-3"></div>
+    </div>
+
+
+    
+  </footer>
+</div>
+
+{% include "partials/modal_atomic_service.html" %}
+{% include "partials/modal_cppn_cpps_services.html" %}
+{% include "partials/modal_delete.html" %}
+
+
+<div id="analysis-results-container" class="container-fluid mt-4 mb-5">
+    <div class="card shadow border-secondary">
+        <div class="card-header bg-light">
+            <h5 class="mb-0 text-secondary">
+                <i class="bi bi-bar-chart-steps"></i> BPMN Analyzer (Process-to-Services approach)
+            </h5>
+        </div>
+
+        <div class="card-body text-center" style="max-height: 95vh; overflow-y: auto;">
+
+            <div id="loading-spinner" class="py-5" style="display:none;">
+                <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;"></div>
+                <p class="mt-3 fs-5 text-muted">
+                    Processing...
+                </p>
+            </div>
+
+            <div id="analysis-images" class="row g-3" style="display:none;">
+                <div class="col-lg-6">
+                    <div class="card h-100 border-0">
+                        <div class="card-body">
+                            <h6 class="text-primary fw-bold">Dendrogram</h6>
+                            <img id="result-img-1" class="img-fluid border rounded shadow-sm">
+                            <a id="link-img-1" class="btn btn-sm btn-outline-secondary mt-2" download="dendrogram.png">
+                                <i class="bi bi-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card h-100 border-0">
+                        <div class="card-body">
+                            <h6 class="text-primary fw-bold">Gamma function trend</h6>
+                            <img id="result-img-2" class="img-fluid border rounded shadow-sm">
+                            <a id="link-img-2" class="btn btn-sm btn-outline-secondary mt-2" download="gamma_trend.png">
+                                <i class="bi bi-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layout con Slider a sinistra e BPMN a destra -->
+            <div id="analysis-bpmn-result" class="mt-4" style="display:none;">
+                <h5 class="text-secondary fw-bold border-bottom pb-2 mb-3">
+                    <i class="bi bi-diagram-3"></i> BPMN Topology Preview
+                </h5>
+
+                <div class="row g-3">
+                    <!-- Colonna sinistra: Slider -->
+                    <div class="col-lg-4">
+                        <div id="iteration-slider-container">
+                            <div class="iteration-info">
+                                <div class="d-flex flex-column gap-2">
+                                    <span class="iteration-badge">
+                                        <i class="bi bi-arrow-repeat"></i> Iteration: <span id="current-iteration-label">0</span>
+                                    </span>
+                                    <span class="gamma-badge">
+                                        <i class="bi bi-graph-down"></i> Gamma: <span id="current-gamma-label">-</span>
+                                    </span>
+                                    <span class="services-badge">
+                                        <i class="bi bi-boxes"></i> Services: <span id="current-services-label">-</span>
+                                    </span>
+                                    <span id="best-marker" class="best-iteration-marker" style="display:none;">
+                                        ★ BEST
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="slider-wrapper">
+                                <input type="range" class="form-range" id="iteration-slider" 
+                                       min="0" max="10" value="0" step="1">
+                            </div>
+                            
+                            <div class="slider-ticks">
+                                <span class="slider-tick">
+                                     Initial<br/>
+                                    <small>(No merge)</small>
+                                </span>
+                                <span class="slider-tick text-center">
+                                    <i class="bi bi-arrow-left-right"></i><br/>
+                                    <small>Explore</small>
+                                </span>
+                                <span class="slider-tick text-end">
+                                     Final<br/>
+                                    <small>(Full aggregation)</small>
+                                </span>
+                            </div>
+                            
+                            <div class="mt-3 text-center">
+                                <a id="download-optimized-bpmn" class="btn btn-primary w-100" download="bpmn_topology.bpmn">
+                                    <i class="bi bi-file-earmark-code"></i>
+                                    Download Current BPMN
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Colonna destra: BPMN Canvas -->
+                    <div class="col-lg-8">
+                        <div id="optimized-canvas"
+                             class="border shadow-sm bg-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analysis-error" class="alert alert-danger mt-3" style="display:none;"></div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+let optimizedViewer = null;
+let allVariants = [];
+let bestIterationIndex = 0;
+
+window.runAnalysis = async function () {
+
+    const spinner = document.getElementById('loading-spinner');
+    const imagesDiv = document.getElementById('analysis-images');
+    const bpmnDiv = document.getElementById('analysis-bpmn-result');
+    const errorDiv = document.getElementById('analysis-error');
+    const canvasDiv = document.getElementById('optimized-canvas');
+
+    // Reset UI
+    spinner.style.display = 'block';
+    imagesDiv.style.display = 'none';
+    bpmnDiv.style.display = 'none';
+    errorDiv.style.display = 'none';
+    canvasDiv.innerHTML = '';
+
+    // Destroy previous viewer
+    if (optimizedViewer) {
+        try { optimizedViewer.destroy(); } catch {}
+        optimizedViewer = null;
+    }
+
+    try {
+        // Get current BPMN XML
+        const res = await (window.bpmnModeler || window.modeler).saveXML({ format: true });
+        const xml = res.xml;
+
+        // Call backend
+        const response = await fetch("{% url 'analyze_bpmn' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ bpmn_xml: xml })
+        });
+
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error);
+
+        // Show images
+        const img1 = "data:image/png;base64," + data.image1;
+        const img2 = "data:image/png;base64," + data.image2;
+
+        document.getElementById('result-img-1').src = img1;
+        document.getElementById('result-img-2').src = img2;
+        document.getElementById('link-img-1').href = img1;
+        document.getElementById('link-img-2').href = img2;
+
+        imagesDiv.style.display = 'flex';
+
+        // Store all variants
+        allVariants = data.variants;
+        bestIterationIndex = data.best_iteration;
+
+        if (!allVariants || allVariants.length === 0) {
+            throw new Error("No variants were generated.");
+        }
+
+        // Setup slider
+        const slider = document.getElementById('iteration-slider');
+        slider.max = allVariants.length - 1;
+        slider.value = bestIterationIndex;
+        
+        // Event listener for slider
+        slider.oninput = function() {
+            updateBPMNView(parseInt(this.value));
+        };
+        
+        // Show BPMN container
+        bpmnDiv.style.display = 'block';
+
+        // Initialize BPMN viewer
+        const BpmnLib = window.BpmnJS || window.BpmnModeler;
+        optimizedViewer = new BpmnLib({ container: '#optimized-canvas' });
+
+        // Show the best iteration initially
+        await updateBPMNView(bestIterationIndex);
+
+    } catch (err) {
+        errorDiv.textContent = "Error: " + err.message;
+        errorDiv.style.display = 'block';
+        console.error(err);
+    } finally {
+        spinner.style.display = 'none';
+    }
+};
+
+async function updateBPMNView(iterationIndex) {
+    if (!allVariants || iterationIndex < 0 || iterationIndex >= allVariants.length) {
+        console.error("Invalid iteration index:", iterationIndex);
+        return;
+    }
+
+    const variant = allVariants[iterationIndex];
+    
+    // Update labels
+    document.getElementById('current-iteration-label').textContent = iterationIndex;
+    document.getElementById('current-gamma-label').textContent = variant.gamma.toFixed(3);
+    document.getElementById('current-services-label').textContent = variant.num_services;
+    
+    // Show/hide "BEST" marker
+    const bestMarker = document.getElementById('best-marker');
+    if (iterationIndex === bestIterationIndex) {
+        bestMarker.style.display = 'inline-block';
+    } else {
+        bestMarker.style.display = 'none';
+    }
+    
+    // Update BPMN viewer
+    if (optimizedViewer && variant.xml) {
+        try {
+            await optimizedViewer.importXML(variant.xml);
+            optimizedViewer.get('canvas').zoom('fit-viewport');
+        } catch (err) {
+            console.error("Error importing XML:", err);
+        }
+    }
+    
+    // Update download link
+    const blob = new Blob([variant.xml], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
+    const downloadLink = document.getElementById('download-optimized-bpmn');
+    
+    // Revoke previous URL to avoid memory leaks
+    if (downloadLink.href && downloadLink.href.startsWith('blob:')) {
+        URL.revokeObjectURL(downloadLink.href);
+    }
+    
+    downloadLink.href = url;
+    downloadLink.download = `bpmn_iteration_${iterationIndex}.bpmn`;
+}
+</script>
+
+{% endblock %}
+
+{% block extra_js %}
+  <script src="https://unpkg.com/bpmn-js@18.3.1/dist/bpmn-modeler.development.js"></script>
+  <script src="{% static 'js/custom-moddle.js' %}"></script>
+  <script src="{% static 'js/atomic_modal_handler.js' %}"></script>
+  <script src="{% static 'js/group_modal_handler.js' %}"></script>
+  <script type="module" src="{% static 'js/editor.js' %}"></script>
+
+{% endblock %}

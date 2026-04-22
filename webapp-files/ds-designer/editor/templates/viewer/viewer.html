@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Diagrams list - Data Services Designer{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0 text-center flex-grow-1">
+    <i class="bi bi-journals"></i> BPMN diagrams
+  </h2>
+
+    <a href="{% url 'homepage' %}" class="btn btn-outline-primary ms-3">
+      <i class="bi bi-house-door"></i> Home
+    </a>
+  </div>
+
+  <table class="table table-striped table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>Name</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="diagram-table-body">
+      <!-- Popolato da JavaScript -->
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadDiagramList() {
+  const res = await fetch('/viewer/api/list/');
+  const list = await res.json();
+  const tbody = document.getElementById('diagram-table-body');
+  tbody.innerHTML = '';
+
+  list.forEach(d => {
+    const row = document.createElement('tr');
+    const viewUrl = `/viewer/by-name/${encodeURIComponent(d.name)}/`;
+    const editUrl = `/editor/?id=${d.id}`;
+    const rbacUrl = `/editor/policies?id=${d.id}`;
+
+    row.innerHTML = `
+      <td>${d.name}</td>
+      <td class="text-center">
+        <a href="${viewUrl}" class="btn btn-sm btn-info me-2">View</a>
+        <button class="btn btn-sm btn-warning me-2" onclick="window.location.href='${editUrl}'">Edit</button>
+        <button class="btn btn-sm btn-warning me-2" onclick="window.location.href='${rbacUrl}'">Rbac policies</button>
+        <button class="btn btn-sm btn-secondary" onclick="exportDiagram('${d.id}')">Download</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteFullDiagram('${d.id}')">Delete</button>
+      </td>
+    `;
+
+    tbody.appendChild(row);
+  });
+}
+
+async function exportDiagram(id) {
+  try {
+    const res = await fetch(`/viewer/api/${id}/`);
+    if (!res.ok) throw new Error("Export failed");
+
+    const data = await res.json();
+    const blob = new Blob([data.xml_content], { type: 'text/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${data.name || 'diagram'}.bpmn`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert("Impossible exporting diagram.");
+    console.error(err);
+  }
+}
+
+
+async function deleteFullDiagram(id) {
+  if (!confirm(`Do you want to delete the diagram and all related services (${id})?`)) return;
+
+  try {
+    const res = await fetch(`/editor/api/delete-diagram/${id}/`, { method: 'DELETE' });
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("DIAGRAM DELETED!");
+      location.reload();
+    } else {
+      alert("Error: " + (data.error || "Delete failed"));
+    }
+  } catch (e) {
+    alert("Network error: " + e.message);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadDiagramList);
+</script>
+{% endblock %}

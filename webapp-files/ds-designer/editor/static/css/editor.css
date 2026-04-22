@@ -1,0 +1,30 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .container-fluid {
+    height: 100vh;
+    overflow: hidden;
+  }
+  #canvas {
+    height: 100%;
+    width: 100%;
+    border: 1px solid #ccc;
+  }
+  .menu-item:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+  .active {
+    background-color: #007bff !important;
+    color: white !important;
+    border-radius: 5px;
+  }
+  #save-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+  }
+  
